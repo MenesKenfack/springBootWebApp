@@ -219,10 +219,6 @@
                         </label>
                         <span class="error-message" id="agreeTermsError"></span>
                     </div>
-
-                    <div class="auth-footer">
-                        <p>Already have an account? <a th:href="@{/login}">Log in</a></p>
-                    </div>
                     
                     <button type="submit" class="btn btn-primary btn-block" id="registerBtn">
                         <span class="btn-text">Create Account</span>
@@ -230,6 +226,10 @@
                             <i class="fas fa-spinner fa-spin"></i>
                         </span>
                     </button>
+
+                    <div class="auth-footer">
+                        <p>Already have an account? <a th:href="@{/login}">Log in</a></p>
+                    </div>
                     
                 </form>
                 
