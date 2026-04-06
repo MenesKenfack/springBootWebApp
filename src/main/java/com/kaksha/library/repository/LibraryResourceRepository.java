@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Repository
@@ -29,6 +30,17 @@ public interface LibraryResourceRepository extends JpaRepository<LibraryResource
     @Query("SELECT r FROM LibraryResource r WHERE r.resourceCatalog.catalogId = :catalogId")
     Page<LibraryResource> findByCatalogId(@Param("catalogId") Long catalogId, Pageable pageable);
     
+    // Year filter
+    Page<LibraryResource> findByPublicationYear(Integer year, Pageable pageable);
+    
+    @Query("SELECT DISTINCT r.publicationYear FROM LibraryResource r WHERE r.publicationYear IS NOT NULL ORDER BY r.publicationYear DESC")
+    List<Integer> findDistinctPublicationYears();
+    
+    // Price filters
+    Page<LibraryResource> findByPriceBetween(BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable);
+    Page<LibraryResource> findByPriceGreaterThanEqual(BigDecimal minPrice, Pageable pageable);
+    Page<LibraryResource> findByPriceLessThanEqual(BigDecimal maxPrice, Pageable pageable);
+    
     boolean existsByResourceCatalog_CatalogId(Long catalogId);
     
     long countByResourceCatalog_CatalogId(Long catalogId);
@@ -36,6 +48,8 @@ public interface LibraryResourceRepository extends JpaRepository<LibraryResource
     List<LibraryResource> findTop5ByOrderByCreatedAtDesc();
     
     long countByIsPremiumOnlyTrue();
+    
+    long countByCategory(ResourceCategory category);
     
     @Query("SELECT COUNT(r) FROM LibraryResource r")
     long countTotalResources();

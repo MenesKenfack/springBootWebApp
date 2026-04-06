@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resources - Kaksha Digital Library</title>
+    <title>Library Resources - Kaksha Digital Library</title>
     <link rel="stylesheet" href="/css/styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
@@ -80,41 +80,216 @@
                 </div>
             </header>
             
-            <div class="dashboard-content">
-                <!-- Search & Filter -->
-                <div class="card filter-card">
-                    <div class="filter-row">
-                        <div class="search-box">
-                            <i class="fas fa-search"></i>
-                            <input type="text" id="searchInput" placeholder="Search resources...">
+            <div class="dashboard-content resources-layout">
+                <!-- Filter Sidebar -->
+                <aside class="filter-sidebar">
+                    <h3 class="filter-sidebar-title">Filter Option</h3>
+                    
+                    <!-- Best Sales - Dynamic -->
+                    <div class="filter-section" id="bestSalesSection">
+                        <div class="accordion-header active" onclick="toggleAccordion(this)">
+                            <span id="bestSalesTitle">Best Sales (<span class="count">0</span>)</span>
+                            <i class="fas fa-minus accordion-icon"></i>
                         </div>
-                        <div class="filter-group">
-                            <select id="categoryFilter" class="form-select">
-                                <option value="">All Categories</option>
-                                <option value="BOOK">Books</option>
-                                <option value="JOURNAL">Journals</option>
-                                <option value="ARTICLE">Articles</option>
-                                <option value="VIDEO">Videos</option>
-                                <option value="AUDIO">Audio</option>
-                                <option value="DOCUMENT">Documents</option>
-                            </select>
-                            <select id="sortBy" class="form-select">
-                                <option value="newest">Newest First</option>
-                                <option value="oldest">Oldest First</option>
-                                <option value="name">Name A-Z</option>
-                            </select>
+                        <div class="accordion-content expanded">
+                            <div class="book-list" id="bestSalesList">
+                                <!-- Dynamic content -->
+                            </div>
                         </div>
                     </div>
-                </div>
+                    
+                    <!-- Most Commented - Dynamic -->
+                    <div class="filter-section" id="mostCommentedSection">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span id="mostCommentedTitle">Most Commented (<span class="count">0</span>)</span>
+                            <i class="fas fa-plus accordion-icon"></i>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="book-list" id="mostCommentedList">
+                                <!-- Dynamic content -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Newest Books - Dynamic -->
+                    <div class="filter-section" id="newestBooksSection">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span id="newestBooksTitle">Newest Books (<span class="count">0</span>)</span>
+                            <i class="fas fa-plus accordion-icon"></i>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="book-list" id="newestBooksList">
+                                <!-- Dynamic content -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Featured - Dynamic -->
+                    <div class="filter-section" id="featuredSection">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span id="featuredTitle">Featured (<span class="count">0</span>)</span>
+                            <i class="fas fa-plus accordion-icon"></i>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="book-list" id="featuredList">
+                                <!-- Dynamic content -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Watch History - Dynamic (User-specific) -->
+                    <div class="filter-section" id="watchHistorySection">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span id="watchHistoryTitle">Watch History (<span class="count">0</span>)</span>
+                            <i class="fas fa-plus accordion-icon"></i>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="book-list" id="watchHistoryList">
+                                <p class="empty-message" style="padding: 0.5rem 0; color: #9CA3AF; font-size: 0.875rem;">No history yet</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Best Books - Dynamic -->
+                    <div class="filter-section" id="bestBooksSection">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span id="bestBooksTitle">Best Books (<span class="count">0</span>)</span>
+                            <i class="fas fa-plus accordion-icon"></i>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="book-list" id="bestBooksList">
+                                <!-- Dynamic content -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <a href="#" class="view-more-link">View more</a>
+                    
+                    <!-- Choose Publisher -->
+                    <div class="filter-dropdown-section">
+                        <label class="filter-label">Choose Publisher</label>
+                        <div class="custom-select-wrapper">
+                            <select id="publisherFilter" class="custom-select">
+                                <option value="">Select Publisher</option>
+                                <option value="Penguin">Penguin Books</option>
+                                <option value="Harper">Harper Collins</option>
+                                <option value="Random">Random House</option>
+                                <option value="Simon">Simon & Schuster</option>
+                            </select>
+                            <i class="fas fa-chevron-down select-arrow"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Select Year - Dynamic -->
+                    <div class="filter-dropdown-section">
+                        <label class="filter-label">Select Year</label>
+                        <div class="custom-select-wrapper">
+                            <select id="yearFilter" class="custom-select">
+                                <option value="">Select Year</option>
+                                <!-- Dynamic options will be loaded -->
+                            </select>
+                            <i class="fas fa-chevron-down select-arrow"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Shop by Category - Dynamic -->
+                    <div class="filter-section" id="categorySection">
+                        <div class="accordion-header active" onclick="toggleAccordion(this)">
+                            <span>Shop by Category</span>
+                            <i class="fas fa-minus accordion-icon"></i>
+                        </div>
+                        <div class="accordion-content expanded">
+                            <div class="category-grid" id="categoryGrid">
+                                <!-- Dynamic categories will be loaded -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Price Range -->
+                    <div class="filter-section">
+                        <div class="accordion-header active" onclick="toggleAccordion(this)">
+                            <span>Price Range</span>
+                            <i class="fas fa-minus accordion-icon"></i>
+                        </div>
+                        <div class="accordion-content expanded">
+                            <div class="price-range-container">
+                                <div class="range-slider">
+                                    <div class="range-track">
+                                        <div class="range-fill" id="priceRangeFill"></div>
+                                    </div>
+                                    <div class="range-thumb" id="minThumb" style="left: 0%;"></div>
+                                    <div class="range-thumb" id="maxThumb" style="left: 100%;"></div>
+                                </div>
+                                <div class="price-labels">
+                                    <span class="price-min">XAF3145</span>
+                                    <span class="price-max">XAF33430</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="filter-actions">
+                        <button class="btn-refine" onclick="refineSearch()">
+                            <i class="fas fa-search"></i> Refine Search
+                        </button>
+                        <button class="btn-reset" onclick="resetFilters()">
+                            Reset Filter
+                        </button>
+                    </div>
+                </aside>
                 
-                <!-- Resources Grid -->
-                <div class="resources-grid full-width" id="resourcesGrid">
-                    <!-- Dynamic content -->
-                </div>
-                
-                <!-- Pagination -->
-                <div class="pagination" id="pagination">
-                    <!-- Dynamic content -->
+                <!-- Main Content Area -->
+                <div class="resources-main">
+                    <!-- Top Bar -->
+                    <div class="resources-topbar">
+                        <div class="tabs-container">
+                            <button class="tab-btn active" data-tab="today">Today</button>
+                            <button class="tab-btn" data-tab="week">This Week</button>
+                            <button class="tab-btn" data-tab="month">This Month</button>
+                        </div>
+                        <div class="view-controls">
+                            <button class="view-btn" title="List View">
+                                <i class="fas fa-list"></i>
+                            </button>
+                            <button class="view-btn" title="Small Grid">
+                                <i class="fas fa-th"></i>
+                            </button>
+                            <button class="view-btn active" title="Large Grid">
+                                <i class="fas fa-th-large"></i>
+                            </button>
+                            <div class="sort-dropdown">
+                                <select id="sortBy" class="sort-select">
+                                    <option value="newest">Newest</option>
+                                    <option value="oldest">Oldest</option>
+                                    <option value="price-low">Price: Low to High</option>
+                                    <option value="price-high">Price: High to Low</option>
+                                </select>
+                                <i class="fas fa-chevron-down sort-arrow"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Book Grid -->
+                    <div class="book-grid" id="resourcesGrid">
+                        <!-- Dynamic content will be loaded here -->
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <div class="pagination-container">
+                        <span class="showing-text">Showing 12 from 50 data</span>
+                        <div class="pagination" id="pagination">
+                            <button class="page-nav" onclick="goToPage(currentPage - 1)" id="prevBtn">
+                                <i class="fas fa-chevron-left"></i> Previous
+                            </button>
+                            <button class="page-btn active" onclick="goToPage(0)">1</button>
+                            <button class="page-btn" onclick="goToPage(1)">2</button>
+                            <button class="page-btn" onclick="goToPage(2)">3</button>
+                            <button class="page-nav" onclick="goToPage(currentPage + 1)" id="nextBtn">
+                                Next <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
@@ -132,6 +307,46 @@
             </div>
             <div class="modal-footer" id="modalResourceFooter">
                 <!-- Dynamic buttons -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Rating Modal -->
+    <div class="modal" id="ratingModal" style="display: none;">
+        <div class="modal-content" style="max-width: 450px;">
+            <div class="modal-header">
+                <h3 id="ratingResourceTitle">Rate Resource</h3>
+                <button type="button" class="close-modal" onclick="closeRatingModal()">&times;</button>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <p style="margin-bottom: 1rem; color: var(--text-medium);">Click a star to rate this resource</p>
+                <div class="rating-stars" style="display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 1.5rem;">
+                    <button class="rating-star" onclick="setRating(1)" style="background: none; border: none; cursor: pointer; padding: 0.25rem;">
+                        <i class="far fa-star" style="font-size: 1.75rem; color: #FBBF24; transition: all 0.2s;"></i>
+                    </button>
+                    <button class="rating-star" onclick="setRating(2)" style="background: none; border: none; cursor: pointer; padding: 0.25rem;">
+                        <i class="far fa-star" style="font-size: 1.75rem; color: #FBBF24; transition: all 0.2s;"></i>
+                    </button>
+                    <button class="rating-star" onclick="setRating(3)" style="background: none; border: none; cursor: pointer; padding: 0.25rem;">
+                        <i class="far fa-star" style="font-size: 1.75rem; color: #FBBF24; transition: all 0.2s;"></i>
+                    </button>
+                    <button class="rating-star" onclick="setRating(4)" style="background: none; border: none; cursor: pointer; padding: 0.25rem;">
+                        <i class="far fa-star" style="font-size: 1.75rem; color: #FBBF24; transition: all 0.2s;"></i>
+                    </button>
+                    <button class="rating-star" onclick="setRating(5)" style="background: none; border: none; cursor: pointer; padding: 0.25rem;">
+                        <i class="far fa-star" style="font-size: 1.75rem; color: #FBBF24; transition: all 0.2s;"></i>
+                    </button>
+                </div>
+                <div class="form-group" style="text-align: left;">
+                    <label for="ratingComment" style="font-size: 0.875rem; color: var(--text-medium); margin-bottom: 0.5rem; display: block;">Comment (optional)</label>
+                    <textarea id="ratingComment" rows="3" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.5rem; background: var(--input-bg); color: var(--text-dark); resize: vertical;" placeholder="Share your thoughts about this resource..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeRatingModal()">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="submitRating()">
+                    <i class="fas fa-paper-plane"></i> Submit Rating
+                </button>
             </div>
         </div>
     </div>

@@ -31,7 +31,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -57,11 +60,23 @@ public class ResourceService {
     private String imageAccessPath;
     
     public Page<ResourceResponse> searchResources(String keyword, ResourceCategory category, Long catalogId, 
-                                                   String author, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+                                                   String author, Integer year, BigDecimal minPrice, 
+                                                   BigDecimal maxPrice, String sortBy, int page, int size) {
+        // Determine sort order
+        Sort sort = Sort.by("createdAt").descending();
+        if ("price-low".equals(sortBy)) {
+            sort = Sort.by("price").ascending();
+        } else if ("price-high".equals(sortBy)) {
+            sort = Sort.by("price").descending();
+        } else if ("oldest".equals(sortBy)) {
+            sort = Sort.by("createdAt").ascending();
+        }
+        
+        Pageable pageable = PageRequest.of(page, size, sort);
         
         Page<LibraryResource> resources;
         
+        // Build dynamic query based on provided filters
         if (keyword != null && !keyword.isEmpty()) {
             resources = resourceRepository.searchByKeyword(keyword, pageable);
         } else if (category != null) {
@@ -70,6 +85,14 @@ public class ResourceService {
             resources = resourceRepository.findByCatalogId(catalogId, pageable);
         } else if (author != null && !author.isEmpty()) {
             resources = resourceRepository.findByAuthorContainingIgnoreCase(author, pageable);
+        } else if (year != null) {
+            resources = resourceRepository.findByPublicationYear(year, pageable);
+        } else if (minPrice != null && maxPrice != null) {
+            resources = resourceRepository.findByPriceBetween(minPrice, maxPrice, pageable);
+        } else if (minPrice != null) {
+            resources = resourceRepository.findByPriceGreaterThanEqual(minPrice, pageable);
+        } else if (maxPrice != null) {
+            resources = resourceRepository.findByPriceLessThanEqual(maxPrice, pageable);
         } else {
             resources = resourceRepository.findAll(pageable);
         }
@@ -529,5 +552,48 @@ public class ResourceService {
         if (user.getRole() != UserRole.ROLE_LIBRARIAN && user.getRole() != UserRole.ROLE_MANAGER) {
             throw new UnauthorizedException("You don't have permission to " + permission);
         }
+    }
+    
+    public List<Integer> getAvailableYears() {
+        log.info("Fetching available publication years from database");
+        return resourceRepository.findDistinctPublicationYears();
+    }
+    
+    public List<Map<String, Object>> getAvailableCategories() {
+        log.info("Fetching available categories from database");
+        List<Map<String, Object>> result = new ArrayList<>();
+        
+        // Get ResourceCategory enum values
+        for (ResourceCategory category : ResourceCategory.values()) {
+            Map<String, Object> catMap = new HashMap<>();
+            catMap.put("value", category.name());
+            catMap.put("label", formatCategoryLabel(category.name()));
+            catMap.put("icon", getCategoryIcon(category.name()));
+            
+            // Get count of resources in this category
+            long count = resourceRepository.countByCategory(category);
+            catMap.put("count", count);
+            
+            result.add(catMap);
+        }
+        
+        return result;
+    }
+    
+    private String formatCategoryLabel(String category) {
+        // Convert BOOK to Book, JOURNAL to Journal, etc.
+        return category.substring(0, 1) + category.substring(1).toLowerCase();
+    }
+    
+    private String getCategoryIcon(String category) {
+        Map<String, String> icons = Map.of(
+            "BOOK", "book",
+            "JOURNAL", "journal-whills",
+            "ARTICLE", "newspaper",
+            "VIDEO", "video",
+            "AUDIO", "headphones",
+            "DOCUMENT", "file-alt"
+        );
+        return icons.getOrDefault(category, "book");
     }
 }

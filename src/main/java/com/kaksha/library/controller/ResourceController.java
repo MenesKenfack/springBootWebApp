@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/resources")
@@ -31,18 +32,24 @@ public class ResourceController {
             @RequestParam(required = false) ResourceCategory category,
             @RequestParam(required = false) Long catalogId,
             @RequestParam(required = false) String author,
+            @RequestParam(required = false) Integer year,
+            @RequestParam(required = false) BigDecimal minPrice,
+            @RequestParam(required = false) BigDecimal maxPrice,
+            @RequestParam(required = false) String sortBy,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "12") int size) {
         
-        log.info("Search resources - keyword: {}, category: {}, page: {}", keyword, category, page);
-        Page<ResourceResponse> resources = resourceService.searchResources(keyword, category, catalogId, author, page, size);
+        log.info("Search resources - keyword: {}, category: {}, year: {}, priceRange: {}-{}, page: {}", 
+                keyword, category, year, minPrice, maxPrice, page);
+        Page<ResourceResponse> resources = resourceService.searchResources(
+                keyword, category, catalogId, author, year, minPrice, maxPrice, sortBy, page, size);
         return ResponseEntity.ok(ApiResponse.success("Resources retrieved successfully", resources));
     }
     
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<ResourceResponse>> getResourceById(@PathVariable Long id) {
         log.info("Get resource by ID: {}", id);
-        ResourceResponse resource = resourceService.searchResources(null, null, null, null, 0, 1)
+        ResourceResponse resource = resourceService.searchResources(null, null, null, null, null, null, null, null, 0, 1)
                 .getContent().stream().filter(r -> r.getResourceID().equals(id)).findFirst()
                 .orElseThrow(() -> new RuntimeException("Resource not found"));
         return ResponseEntity.ok(ApiResponse.success("Resource retrieved successfully", resource));
@@ -182,5 +189,19 @@ public class ResourceController {
         log.info("Get recent resources");
         List<ResourceResponse> resources = resourceService.getRecentResources(5);
         return ResponseEntity.ok(ApiResponse.success("Recent resources retrieved", resources));
+    }
+    
+    @GetMapping("/years")
+    public ResponseEntity<ApiResponse<List<Integer>>> getAvailableYears() {
+        log.info("Get available publication years");
+        List<Integer> years = resourceService.getAvailableYears();
+        return ResponseEntity.ok(ApiResponse.success("Available years retrieved", years));
+    }
+    
+    @GetMapping("/categories")
+    public ResponseEntity<ApiResponse<List<Map<String, Object>>>> getAvailableCategories() {
+        log.info("Get available resource categories");
+        List<Map<String, Object>> categories = resourceService.getAvailableCategories();
+        return ResponseEntity.ok(ApiResponse.success("Available categories retrieved", categories));
     }
 }
