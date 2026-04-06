@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Kaksha Digital Library</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="dashboard-page">
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-book-open"></i>
+                    <span>Kaksha</span>
+                </div>
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="/dashboard.html" class="nav-item active">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/resources.html" class="nav-item">
+                    <i class="fas fa-book"></i>
+                    <span>Resources</span>
+                </a>
+                <a href="/purchases.html" class="nav-item" id="purchasesNav" style="display: none;">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Purchases</span>
+                </a>
+                <a href="/my-list" class="nav-item" id="myListNav" style="display: none;">
+                    <i class="fas fa-heart"></i>
+                    <span>My List</span>
+                </a>
+                <a href="/analytics.html" class="nav-item" id="analyticsNav" style="display: none;">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Analytics</span>
+                </a>
+                <a href="/manage-resources.html" class="nav-item" id="manageResourcesNav" style="display: none;">
+                    <i class="fas fa-cog"></i>
+                    <span>Manage Resources</span>
+                </a>
+                <a href="/catalogs.html" class="nav-item" id="catalogsNav" style="display: none;">
+                    <i class="fas fa-folder-open"></i>
+                    <span>Catalogs</span>
+                </a>
+                <a href="/users.html" class="nav-item" id="usersNav" style="display: none;">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </a>
+                <a href="/profile.html" class="nav-item">
+                    <i class="fas fa-user"></i>
+                    <span>Profile</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button class="btn btn-logout" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-left">
+                    <h1 id="pageTitle">Dashboard</h1>
+                    <p id="currentDate"></p>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <span id="userName">User</span>
+                        <div class="avatar">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <div class="dashboard-content">
+                <!-- Global Search & Quick Actions -->
+                <div class="card search-action-card">
+                    <div class="search-section">
+                        <div class="global-search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="globalSearchInput" placeholder="Search resources, books, articles...">
+                            <button class="btn btn-primary" onclick="performGlobalSearch()">
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="quick-actions">
+                        <a href="/resources.html" class="quick-action-btn">
+                            <i class="fas fa-book"></i>
+                            <span>Browse Resources</span>
+                        </a>
+                        <a href="/purchases.html" class="quick-action-btn">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>My Purchases</span>
+                        </a>
+                        <a href="/profile.html" class="quick-action-btn">
+                            <i class="fas fa-user"></i>
+                            <span>My Profile</span>
+                        </a>
+                        <a href="/analytics.html" class="quick-action-btn manager-only" id="analyticsQuickAction" style="display: none;">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Analytics</span>
+                        </a>
+                        <a href="/manage-resources.html" class="quick-action-btn librarian-only" id="manageQuickAction" style="display: none;">
+                            <i class="fas fa-cog"></i>
+                            <span>Manage Resources</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(75, 83, 32, 0.1); color: #4B5320;">
+                            <i class="fas fa-book-reader"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalAccessed">0</h3>
+                            <p>Total Resources Accessed</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(93, 101, 50, 0.1); color: #5D6532;">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="newUsers">0</h3>
+                            <p>New Users This Month</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(106, 115, 55, 0.1); color: #6A7337;">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="revenue">0 XAF</h3>
+                            <p>Revenue This Month</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(146, 154, 104, 0.1); color: #929A68;">
+                            <i class="fas fa-library"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalResources">0</h3>
+                            <p>Total Resources</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Combined Activity & Resources Section -->
+                <div class="dashboard-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <!-- Recent Activity Section -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-clock"></i> Recent Activity</h3>
+                            <span class="badge" style="background: rgba(75, 83, 32, 0.1); color: #4B5320; padding: 0.25rem 0.75rem; border-radius: 1rem;">Live</span>
+                        </div>
+                        <div class="card-body">
+                            <div id="recentActivityList" style="max-height: 250px; overflow-y: auto;">
+                                <!-- Dynamic content loaded from database -->
+                            </div>
+                            <div id="noActivity" class="empty-state" style="display: none; text-align: center; padding: 2rem;">
+                                <i class="fas fa-inbox" style="font-size: 2rem; color: var(--text-light); margin-bottom: 0.5rem;"></i>
+                                <p>No recent activity</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Resources -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Recent Resources</h3>
+                            <a href="/resources.html" class="view-all">View All</a>
+                        </div>
+                        <div class="card-body">
+                            <div id="recentResourcesGrid" style="max-height: 250px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem;">
+                                <!-- Dynamic content -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="/js/api.js"></script>
+    <script src="/js/dashboard.js"></script>
+</body>
+</html>

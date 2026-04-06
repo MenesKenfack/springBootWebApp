@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Kaksha Digital Library</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="auth-page">
+    <div class="auth-container">
+        <div class="auth-left">
+            <div class="auth-illustration">
+                <div class="illustration-bg">
+                    <div class="tree-container">
+                        <svg class="tree-svg" viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Tree trunk -->
+                            <path class="tree-trunk" d="M200 450 Q190 400 195 350 Q185 300 200 250 Q210 200 200 150 Q190 100 200 50" 
+                                  fill="none" stroke="#2D3748" stroke-width="25" stroke-linecap="round"/>
+                            <!-- Branches -->
+                            <path class="branch" d="M200 250 Q150 220 130 200" fill="none" stroke="#2D3748" stroke-width="8" stroke-linecap="round"/>
+                            <path class="branch" d="M200 200 Q250 170 270 150" fill="none" stroke="#2D3748" stroke-width="8" stroke-linecap="round"/>
+                            <path class="branch" d="M200 150 Q160 120 140 100" fill="none" stroke="#2D3748" stroke-width="6" stroke-linecap="round"/>
+                            <!-- Army Green leaves clusters -->
+                            <g class="leaves">
+                                <circle cx="130" cy="200" r="30" fill="#4B5320" opacity="0.9"/>
+                                <circle cx="110" cy="180" r="25" fill="#5D6532" opacity="0.8"/>
+                                <circle cx="150" cy="180" r="28" fill="#3A3F28" opacity="0.85"/>
+                                
+                                <circle cx="270" cy="150" r="35" fill="#4B5320" opacity="0.9"/>
+                                <circle cx="290" cy="130" r="28" fill="#5D6532" opacity="0.8"/>
+                                <circle cx="250" cy="130" r="30" fill="#3A3F28" opacity="0.85"/>
+                                
+                                <circle cx="140" cy="100" r="32" fill="#4B5320" opacity="0.9"/>
+                                <circle cx="120" cy="80" r="26" fill="#5D6532" opacity="0.8"/>
+                                <circle cx="160" cy="80" r="28" fill="#3A3F28" opacity="0.85"/>
+                                
+                                <circle cx="200" cy="50" r="40" fill="#4B5320" opacity="0.95"/>
+                                <circle cx="180" cy="40" r="30" fill="#5D6532" opacity="0.85"/>
+                                <circle cx="220" cy="40" r="32" fill="#3A3F28" opacity="0.9"/>
+                            </g>
+                        </svg>
+                    </div>
+                    <div class="swing-girl">
+                        <svg viewBox="0 0 100 150" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Swing rope -->
+                            <line x1="50" y1="0" x2="50" y2="60" stroke="#4B5320" stroke-width="2"/>
+                            <!-- Girl reading -->
+                            <circle cx="50" cy="45" r="12" fill="#FCD34D"/> <!-- Head -->
+                            <ellipse cx="50" cy="75" rx="15" ry="20" fill="#4B5320"/> <!-- Dress -->
+                            <ellipse cx="50" cy="70" rx="18" ry="8" fill="white" opacity="0.9"/> <!-- Book -->
+                            <line x1="35" y1="90" x2="35" y2="110" stroke="#FCD34D" stroke-width="6" stroke-linecap="round"/> <!-- Left leg -->
+                            <line x1="65" y1="90" x2="65" y2="105" stroke="#FCD34D" stroke-width="6" stroke-linecap="round"/> <!-- Right leg -->
+                        </svg>
+                    </div>
+                </div>
+                <div class="brand-text">
+                    <h1>Kaksha</h1>
+                    <p>Digital Library Platform</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="auth-right">
+            <div class="auth-form-container">
+                <a th:href="@{/}" class="back-home">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <div class="auth-header">
+                    <h2>Welcome Back</h2>
+                    <p>Please enter your credentials to continue</p>
+                </div>
+                
+                <form id="loginForm" class="auth-form" onsubmit="event.preventDefault(); return false;">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <div class="input-group">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                        </div>
+                        <span class="error-message" id="emailError"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="input-group">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                            <button type="button" class="toggle-password" onclick="togglePassword('password')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <span class="error-message" id="passwordError"></span>
+                    </div>
+                    
+                    <div class="form-options">
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="rememberMe" name="rememberMe">
+                            <span class="checkmark"></span>
+                            Remember me
+                        </label>
+                        <a href="#" class="forgot-password">Forgot Password?</a>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-block" id="loginBtn">
+                        <span class="btn-text">Login</span>
+                        <span class="btn-loader" style="display: none;">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </span>
+                    </button>
+                    
+                </form>
+                
+                <div class="auth-footer">
+                    <p>Don't have an account? <a th:href="@{/register}">Sign up</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script th:src="@{/js/api.js}" src="/js/api.js"></script>
+    <script th:src="@{/js/auth.js}" src="/js/auth.js"></script>
+    <script th:src="@{/js/theme.js}" src="/js/theme.js"></script>
+</body>
+</html>

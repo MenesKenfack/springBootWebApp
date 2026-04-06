@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Kaksha Digital Library</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="auth-page">
+    <div class="auth-container">
+        <div class="auth-left">
+            <div class="auth-illustration">
+                <div class="illustration-bg">
+                    <div class="tree-container">
+                        <svg class="tree-svg" viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
+                            <path class="tree-trunk" d="M200 450 Q190 400 195 350 Q185 300 200 250 Q210 200 200 150 Q190 100 200 50" 
+                                  fill="none" stroke="#2D3748" stroke-width="25" stroke-linecap="round"/>
+                            <path class="branch" d="M200 250 Q150 220 130 200" fill="none" stroke="#2D3748" stroke-width="8" stroke-linecap="round"/>
+                            <path class="branch" d="M200 200 Q250 170 270 150" fill="none" stroke="#2D3748" stroke-width="8" stroke-linecap="round"/>
+                            <path class="branch" d="M200 150 Q160 120 140 100" fill="none" stroke="#2D3748" stroke-width="6" stroke-linecap="round"/>
+                            <g class="leaves">
+                                <circle cx="130" cy="200" r="30" fill="#4B5320" opacity="0.9"/>
+                                <circle cx="110" cy="180" r="25" fill="#5D6532" opacity="0.8"/>
+                                <circle cx="150" cy="180" r="28" fill="#3A3F28" opacity="0.85"/>
+                                <circle cx="270" cy="150" r="35" fill="#4B5320" opacity="0.9"/>
+                                <circle cx="290" cy="130" r="28" fill="#5D6532" opacity="0.8"/>
+                                <circle cx="250" cy="130" r="30" fill="#3A3F28" opacity="0.85"/>
+                                <circle cx="140" cy="100" r="32" fill="#4B5320" opacity="0.9"/>
+                                <circle cx="120" cy="80" r="26" fill="#5D6532" opacity="0.8"/>
+                                <circle cx="160" cy="80" r="28" fill="#3A3F28" opacity="0.85"/>
+                                <circle cx="200" cy="50" r="40" fill="#4B5320" opacity="0.95"/>
+                                <circle cx="180" cy="40" r="30" fill="#5D6532" opacity="0.85"/>
+                                <circle cx="220" cy="40" r="32" fill="#3A3F28" opacity="0.9"/>
+                            </g>
+                        </svg>
+                    </div>
+                    <div class="swing-girl">
+                        <svg viewBox="0 0 100 150" xmlns="http://www.w3.org/2000/svg">
+                            <line x1="50" y1="0" x2="50" y2="60" stroke="#4B5320" stroke-width="2"/>
+                            <circle cx="50" cy="45" r="12" fill="#FCD34D"/>
+                            <ellipse cx="50" cy="75" rx="15" ry="20" fill="#4B5320"/>
+                            <ellipse cx="50" cy="70" rx="18" ry="8" fill="white" opacity="0.9"/>
+                            <line x1="35" y1="90" x2="35" y2="110" stroke="#FCD34D" stroke-width="6" stroke-linecap="round"/>
+                            <line x1="65" y1="90" x2="65" y2="105" stroke="#FCD34D" stroke-width="6" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="brand-text">
+                    <h1>Kaksha</h1>
+                    <p>Join Our Learning Community</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="auth-right">
+            <div class="auth-form-container">
+                <a th:href="@{/}" class="back-home">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <div class="auth-header">
+                    <h2>Create Account</h2>
+                    <p>Fill in your details to get started</p>
+                </div>
+                
+                <form id="registerForm" class="auth-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName">First Name</label>
+                            <div class="input-group">
+                                <i class="fas fa-user"></i>
+                                <input type="text" id="firstName" name="firstName" placeholder="First name" required>
+                            </div>
+                            <span class="error-message" id="firstNameError"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="lastName">Last Name</label>
+                            <div class="input-group">
+                                <i class="fas fa-user"></i>
+                                <input type="text" id="lastName" name="lastName" placeholder="Last name" required>
+                            </div>
+                            <span class="error-message" id="lastNameError"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <div class="input-group">
+                            <i class="fas fa-at"></i>
+                            <input type="text" id="username" name="username" placeholder="Choose a username" required>
+                        </div>
+                        <span class="error-message" id="usernameError"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <div class="input-group">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                        </div>
+                        <span class="error-message" id="emailError"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="dateOfBirth">Date of Birth</label>
+                        <div class="input-group">
+                            <i class="fas fa-calendar"></i>
+                            <input type="date" id="dateOfBirth" name="dateOfBirth" required>
+                        </div>
+                        <span class="error-message" id="dateOfBirthError"></span>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <div class="input-group">
+                                <i class="fas fa-lock"></i>
+                                <input type="password" id="password" name="password" placeholder="Create password" required>
+                                <button type="button" class="toggle-password" onclick="togglePassword('password')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <span class="error-message" id="passwordError"></span>
+                            <small class="password-hint">Min 8 chars, 1 uppercase, 1 lowercase, 1 number</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm Password</label>
+                            <div class="input-group">
+                                <i class="fas fa-lock"></i>
+                                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm password" required>
+                                <button type="button" class="toggle-password" onclick="togglePassword('confirmPassword')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <span class="error-message" id="confirmPasswordError"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group terms-checkbox-group">
+                        <label class="checkbox-label terms-checkbox">
+                            <input type="checkbox" id="agreeTerms" name="agreeTerms" required>
+                            <span class="checkbox-text">
+                                I agree to the <a href="#" onclick="showTermsModal(event)">Terms and Conditions</a> 
+                                and <a href="#" onclick="showPrivacyModal(event)">Privacy Policy</a>
+                            </span>
+                        </label>
+                        <span class="error-message" id="agreeTermsError"></span>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-block" id="registerBtn">
+                        <span class="btn-text">Create Account</span>
+                        <span class="btn-loader" style="display: none;">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </span>
+                    </button>
+                    
+                </form>
+                
+                <div class="auth-footer">
+                    <p>Already have an account? <a th:href="@{/login}">Log in</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Verification Modal -->
+    <div id="verificationModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Verify Your Email</h3>
+                <button type="button" class="close-modal" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Enter the 6-digit verification code sent to your email.</p>
+                <div class="verification-inputs">
+                    <input type="text" maxlength="6" id="verificationCode" placeholder="000000" class="code-input">
+                </div>
+                <p class="resend-text">
+                    Didn't receive code? <a href="#" onclick="resendCode()">Resend</a>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="verifyEmail()">Verify</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Terms and Conditions Modal -->
+    <div id="termsModal" class="modal" style="display: none;">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h3 id="termsModalTitle">Terms and Conditions</h3>
+                <button type="button" class="close-modal" onclick="closeTermsModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="terms-content" id="termsContent" style="max-height: 60vh; overflow-y: auto; white-space: pre-wrap; line-height: 1.8;">
+                    <p class="text-center"><i class="fas fa-spinner fa-spin"></i> Loading terms...</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeTermsModal()">Close</button>
+                <button type="button" class="btn btn-primary" onclick="acceptTerms()">I Agree</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Privacy Policy Modal -->
+    <div id="privacyModal" class="modal" style="display: none;">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h3>Privacy Policy</h3>
+                <button type="button" class="close-modal" onclick="closePrivacyModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="terms-content" style="max-height: 60vh; overflow-y: auto; white-space: pre-wrap; line-height: 1.8;">
+                    <h4>1. Information Collection</h4>
+                    <p>We collect personal information such as your name, email, and date of birth to provide our services.</p>
+                    
+                    <h4>2. Use of Information</h4>
+                    <p>Your information is used to manage your account, process transactions, and improve our services.</p>
+                    
+                    <h4>3. Data Security</h4>
+                    <p>We implement security measures to protect your personal information from unauthorized access.</p>
+                    
+                    <h4>4. Third-Party Sharing</h4>
+                    <p>We do not sell or share your personal information with third parties except as required by law or to provide our services.</p>
+                    
+                    <h4>5. Your Rights</h4>
+                    <p>You have the right to access, modify, or delete your personal information at any time.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closePrivacyModal()">Close</button>
+            </div>
+        </div>
+    </div>
+    
+    <script th:src="@{/js/api.js}" src="/js/api.js"></script>
+    <script th:src="@{/js/auth.js}" src="/js/auth.js"></script>
+    <script th:src="@{/js/theme.js}" src="/js/theme.js"></script>
+</body>
+</html>

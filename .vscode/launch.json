@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-KakshaApplication<library>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.kaksha.library.KakshaApplication",
+            "projectName": "library",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
