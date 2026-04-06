@@ -177,7 +177,6 @@ async function loadReports() {
             Toast.error(response.message || 'Failed to load reports');
         }
     } catch (error) {
-        console.error('Error loading reports:', error);
         Toast.error('Failed to load reports');
     }
 }
@@ -307,7 +306,6 @@ async function loadReportForEdit(reportId) {
             document.getElementById('reportDescription').value = report.description || '';
         }
     } catch (error) {
-        console.error('Error loading report for edit:', error);
         Toast.error('Failed to load report details');
     }
 }
@@ -349,7 +347,6 @@ async function generateNewReport() {
             Toast.error(response.message || 'Failed to save report');
         }
     } catch (error) {
-        console.error('Error saving report:', error);
         Toast.error(error.message || 'Failed to save report');
     }
 }
@@ -373,7 +370,6 @@ async function deleteReport(reportId) {
             Toast.error(response.message || 'Failed to delete report');
         }
     } catch (error) {
-        console.error('Error deleting report:', error);
         Toast.error(error.message || 'Failed to delete report');
     }
 }
@@ -390,7 +386,6 @@ async function downloadReport(reportId) {
             Toast.error(response.message || 'Failed to download report');
         }
     } catch (error) {
-        console.error('Error downloading report:', error);
         Toast.error(error.message || 'Failed to download report');
     }
 }

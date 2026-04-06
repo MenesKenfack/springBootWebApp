@@ -204,4 +204,11 @@ public class ResourceController {
         List<Map<String, Object>> categories = resourceService.getAvailableCategories();
         return ResponseEntity.ok(ApiResponse.success("Available categories retrieved", categories));
     }
+    
+    @GetMapping("/authors")
+    public ResponseEntity<ApiResponse<List<String>>> getAvailableAuthors() {
+        log.info("Get available authors");
+        List<String> authors = resourceService.getAvailableAuthors();
+        return ResponseEntity.ok(ApiResponse.success("Available authors retrieved", authors));
+    }
 }

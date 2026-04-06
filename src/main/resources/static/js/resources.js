@@ -663,6 +663,7 @@ function renderProfessionalCard(resource, options = {}) {
     const token = TokenManager.getToken();
     const user = UserStorage.getUser();
     const isLoggedIn = !!token;
+    const isClient = isLoggedIn && user?.role === 'ROLE_CLIENT';
     
     // Determine action button
     let actionBtn = '';
@@ -676,6 +677,13 @@ function renderProfessionalCard(resource, options = {}) {
         actionBtn = `
             <button class="card-action-btn buy" onclick="event.stopPropagation(); window.location.href='/login'">
                 <i class="fas fa-sign-in-alt"></i> Login to Buy
+            </button>
+        `;
+    } else if (!isClient) {
+        // Logged in but not a client (Librarian/Manager)
+        actionBtn = `
+            <button class="card-action-btn" onclick="event.stopPropagation(); showNonClientMessage()" title="Only clients can purchase">
+                <i class="fas fa-lock"></i> Client Only
             </button>
         `;
     } else {
@@ -781,7 +789,7 @@ async function loadRecommendedSection() {
             container.innerHTML = '';
         }
     } catch (error) {
-        console.error('Failed to load recommended:', error);
+        Toast.error('Failed to load recommended section');
         container.innerHTML = '';
     }
 }
@@ -807,7 +815,7 @@ async function loadNewlyAddedSection() {
             container.innerHTML = '';
         }
     } catch (error) {
-        console.error('Failed to load newly added:', error);
+        Toast.error('Failed to load newly added section');
         container.innerHTML = '';
     }
 }
@@ -843,7 +851,7 @@ async function loadTopRatedSection() {
             container.innerHTML = '';
         }
     } catch (error) {
-        console.error('Failed to load top rated:', error);
+        Toast.error('Failed to load top rated section');
         container.innerHTML = '';
     }
 }
@@ -1133,9 +1141,15 @@ function renderBookCard(resource) {
                 <div class="book-price">
                     ${priceDisplay}
                 </div>
-                <button class="btn-buy" onclick="event.stopPropagation(); handleBuyClick(${resource.resourceID}, ${hasFullAccess}, ${isFree})">
-                    <i class="fas fa-shopping-cart"></i> Buy
-                </button>
+                ${hasFullAccess ? `
+                    <button class="btn-buy" style="background: linear-gradient(135deg, #10B981, #059669);" onclick="event.stopPropagation(); showResourceDetail(${resource.resourceID})">
+                        <i class="fas fa-book-open"></i> Read
+                    </button>
+                ` : `
+                    <button class="btn-buy" onclick="event.stopPropagation(); handleBuyClick(${resource.resourceID}, ${hasFullAccess}, ${isFree})">
+                        <i class="fas fa-shopping-cart"></i> Buy
+                    </button>
+                `}
             </div>
         </div>
     `;
@@ -1260,8 +1274,7 @@ async function loadYearOptions() {
             });
         }
     } catch (error) {
-        console.error('Failed to load year options:', error);
-        // Fallback: keep the select empty or with default options
+        // Silently fail for year options - not critical
     }
 }
 
@@ -1287,7 +1300,7 @@ async function loadCategoryOptions() {
             setupCategoryCheckboxes();
         }
     } catch (error) {
-        console.error('Failed to load category options:', error);
+        Toast.error('Failed to load categories');
         // Fallback to default categories
         categoryGrid.innerHTML = `
             <label class="category-checkbox checked">
@@ -1340,7 +1353,7 @@ async function loadSidebarData() {
             loadBestBooks()
         ]);
     } catch (error) {
-        console.error('Failed to load sidebar data:', error);
+        Toast.error('Failed to load sidebar data');
     }
 }
 
@@ -1367,7 +1380,7 @@ async function loadBestSales() {
             listEl.innerHTML = '<p class="empty-message" style="padding: 0.5rem 0; color: #9CA3AF; font-size: 0.875rem;">No data available</p>';
         }
     } catch (error) {
-        console.error('Failed to load best sales:', error);
+        Toast.error('Failed to load best sales');
         listEl.innerHTML = '<p class="empty-message" style="padding: 0.5rem 0; color: #9CA3AF; font-size: 0.875rem;">Failed to load</p>';
     }
 }
@@ -1403,7 +1416,7 @@ async function loadMostCommented() {
             listEl.innerHTML = '<p class="empty-message" style="padding: 0.5rem 0; color: #9CA3AF; font-size: 0.875rem;">No data available</p>';
         }
     } catch (error) {
-        console.error('Failed to load most commented:', error);
+        Toast.error('Failed to load most commented');
         listEl.innerHTML = '<p class="empty-message" style="padding: 0.5rem 0; color: #9CA3AF; font-size: 0.875rem;">Failed to load</p>';
     }
 }
@@ -1430,7 +1443,7 @@ async function loadNewestBooks() {
             listEl.innerHTML = '<p class="empty-message" style="padding: 0.5rem 0; color: #9CA3AF; font-size: 0.875rem;">No new books</p>';
         }
     } catch (error) {
-        console.error('Failed to load newest books:', error);
+        Toast.error('Failed to load newest books');
         listEl.innerHTML = '<p class="empty-message" style="padding: 0.5rem 0; color: #9CA3AF; font-size: 0.875rem;">Failed to load</p>';
     }
 }
@@ -1466,7 +1479,7 @@ async function loadFeatured() {
             listEl.innerHTML = '<p class="empty-message" style="padding: 0.5rem 0; color: #9CA3AF; font-size: 0.875rem;">No featured books</p>';
         }
     } catch (error) {
-        console.error('Failed to load featured:', error);
+        Toast.error('Failed to load featured books');
         listEl.innerHTML = '<p class="empty-message" style="padding: 0.5rem 0; color: #9CA3AF; font-size: 0.875rem;">Failed to load</p>';
     }
 }
@@ -1495,7 +1508,6 @@ async function loadWatchHistory() {
             listEl.innerHTML = '<p class="empty-message" style="padding: 0.5rem 0; color: #9CA3AF; font-size: 0.875rem;">No history yet</p>';
         }
     } catch (error) {
-        console.error('Failed to load watch history:', error);
         if (countEl) countEl.textContent = '0';
         listEl.innerHTML = '<p class="empty-message" style="padding: 0.5rem 0; color: #9CA3AF; font-size: 0.875rem;">Sign in to see history</p>';
     }
@@ -1532,7 +1544,7 @@ async function loadBestBooks() {
             listEl.innerHTML = '<p class="empty-message" style="padding: 0.5rem 0; color: #9CA3AF; font-size: 0.875rem;">No data available</p>';
         }
     } catch (error) {
-        console.error('Failed to load best books:', error);
+        Toast.error('Failed to load best books');
         listEl.innerHTML = '<p class="empty-message" style="padding: 0.5rem 0; color: #9CA3AF; font-size: 0.875rem;">Failed to load</p>';
     }
 }
@@ -1541,4 +1553,9 @@ async function loadBestBooks() {
 document.addEventListener('DOMContentLoaded', () => {
     setTimeout(initNewFeatures, 100);
 });
+
+// Show message for non-client users trying to purchase
+function showNonClientMessage() {
+    Toast.warning('Only clients can purchase resources. Librarians and Managers have full access to all resources.');
+}
 

@@ -131,8 +131,10 @@ async function loadDashboardData() {
         } else {
             await loadClientDashboardData();
         }
+        
+        // Load recent activities for all users
+        await loadRecentActivities();
     } catch (error) {
-        console.error('Failed to load dashboard data:', error);
         Toast.error('Failed to load dashboard data. Please refresh the page.');
     }
 }
@@ -180,7 +182,7 @@ async function loadManagerDashboardData() {
         renderManagementActivity(usersResponse.data || [], reportsResponse.data || [], backupsResponse.data || []);
         
     } catch (error) {
-        console.error('Failed to load manager dashboard data:', error);
+        Toast.error('Failed to load manager dashboard data');
     }
 }
 
@@ -216,7 +218,7 @@ async function loadClientDashboardData() {
         renderClientActivity(recentPurchases.data || [], myListResponse.data || []);
         
     } catch (error) {
-        console.error('Failed to load client dashboard data:', error);
+        Toast.error('Failed to load client dashboard data');
     }
 }
 
@@ -276,7 +278,7 @@ async function loadLibrarianDashboardData() {
             popularCategory ? popularCategory[0] : '-';
         
     } catch (error) {
-        console.error('Failed to load librarian dashboard data:', error);
+        Toast.error('Failed to load librarian dashboard data');
     }
 }
 
@@ -527,55 +529,50 @@ function renderRecentResources(resources) {
     `).join('');
 }
 
-function renderRecentActivity(activities) {
+async function loadRecentActivities() {
     const container = document.getElementById('recentActivityList');
     const noActivity = document.getElementById('noActivity');
     
     if (!container) return;
     
+    try {
+        const response = await activityAPI.getRecent(10);
+        
+        if (response.success && response.data && response.data.length > 0) {
+            renderActivityList(response.data, container, noActivity);
+        } else {
+            container.innerHTML = '';
+            if (noActivity) noActivity.style.display = 'block';
+        }
+    } catch (error) {
+        Toast.error('Failed to load recent activities');
+        container.innerHTML = '';
+        if (noActivity) noActivity.style.display = 'block';
+    }
+}
+
+function renderActivityList(activities, container, noActivityElement) {
     if (activities.length === 0) {
         container.innerHTML = '';
-        noActivity.style.display = 'block';
+        if (noActivityElement) noActivityElement.style.display = 'block';
         return;
     }
     
-    noActivity.style.display = 'none';
+    if (noActivityElement) noActivityElement.style.display = 'none';
     
-    // Combine and sort activities (purchases, resource views, etc.)
-    const allActivities = activities.map(purchase => ({
-        type: 'purchase',
-        icon: 'shopping-cart',
-        iconColor: '#4B5320',
-        bgColor: 'rgba(75, 83, 32, 0.1)',
-        title: `Purchased "${escapeHtml(purchase.resourceTitle || 'Unknown Resource')}"`,
-        description: `by ${escapeHtml(purchase.clientName || 'Unknown')}`,
-        amount: purchase.amount ? `${purchase.amount.toLocaleString()} XAF` : '',
-        date: purchase.date,
-        timestamp: new Date(purchase.date).getTime()
-    }));
-    
-    // Sort by date (newest first)
-    allActivities.sort((a, b) => b.timestamp - a.timestamp);
-    
-    // Take only the most recent 10
-    const recentActivities = allActivities.slice(0, 10);
-    
-    container.innerHTML = recentActivities.map(activity => `
+    container.innerHTML = activities.map(activity => `
         <div class="activity-item" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid #E5E7EB; transition: background 0.2s;" onmouseover="this.style.background='#F9FAFB'" onmouseout="this.style.background='transparent'">
-            <div class="activity-icon" style="width: 40px; height: 40px; border-radius: 50%; background: ${activity.bgColor}; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <div class="activity-icon" style="width: 40px; height: 40px; border-radius: 50%; background: ${activity.iconColor}15; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                 <i class="fas fa-${activity.icon}" style="color: ${activity.iconColor}; font-size: 0.875rem;"></i>
             </div>
             <div class="activity-content" style="flex: 1; min-width: 0;">
                 <div class="activity-title" style="font-weight: 600; color: #1F2937; margin-bottom: 0.25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                    ${activity.title}
+                    ${escapeHtml(activity.description)}
                 </div>
-                <div class="activity-meta" style="font-size: 0.875rem; color: #6B7280; display: flex; gap: 0.5rem; align-items: center;">
-                    <span>${activity.description}</span>
-                    ${activity.amount ? `<span style="color: #4B5320; font-weight: 500;">• ${activity.amount}</span>` : ''}
-                </div>
+                ${activity.resourceTitle ? `<div class="activity-meta" style="font-size: 0.875rem; color: #6B7280;">${escapeHtml(activity.resourceTitle)}</div>` : ''}
             </div>
             <div class="activity-time" style="font-size: 0.75rem; color: #9CA3AF; flex-shrink: 0;">
-                ${formatDate(activity.date)}
+                ${activity.formattedTime}
             </div>
         </div>
     `).join('');
@@ -804,44 +801,47 @@ function renderRecommendedResources(allResources, purchasedResources) {
     `).join('');
 }
 
-function renderClientActivity(purchases, savedItems) {
+async function renderClientActivity(purchases, savedItems) {
     const container = document.getElementById('clientActivityList');
     const noActivity = document.getElementById('noClientActivity');
     
     if (!container) return;
     
-    // Create activity items from purchases and saved items
-    const activities = [];
+    // Try to get activities from API first
+    let activities = [];
+    try {
+        const response = await activityAPI.getRecent(10);
+        if (response.success && response.data) {
+            activities = response.data;
+        }
+    } catch (error) {
+        // Fallback to local data if API fails
+    }
     
-    // Add purchase activities
-    purchases.slice(0, 5).forEach(purchase => {
-        activities.push({
-            type: 'purchase',
-            icon: 'shopping-bag',
-            iconColor: '#4B5320',
-            bgColor: 'rgba(75, 83, 32, 0.1)',
-            title: `Purchased "${escapeHtml(purchase.resourceTitle || 'Unknown Resource')}"`,
-            time: purchase.date,
-            timestamp: purchase.date ? new Date(purchase.date).getTime() : 0
+    // If no API activities, create from local data
+    if (activities.length === 0) {
+        // Add purchase activities
+        purchases.slice(0, 5).forEach(purchase => {
+            activities.push({
+                icon: 'shopping-bag',
+                iconColor: '#4B5320',
+                description: `Purchased "${purchase.resourceTitle || 'Unknown Resource'}"`,
+                resourceTitle: null,
+                formattedTime: formatDate(purchase.date)
+            });
         });
-    });
-    
-    // Add saved item activities
-    savedItems.slice(0, 5).forEach(item => {
-        activities.push({
-            type: 'saved',
-            icon: 'heart',
-            iconColor: '#EAB308',
-            bgColor: 'rgba(234, 179, 8, 0.1)',
-            title: `Added "${escapeHtml(item.title || 'Unknown Resource')}" to My List`,
-            time: item.createdAt || item.addedAt,
-            timestamp: item.createdAt ? new Date(item.createdAt).getTime() : 
-                      item.addedAt ? new Date(item.addedAt).getTime() : 0
+        
+        // Add saved item activities
+        savedItems.slice(0, 5).forEach(item => {
+            activities.push({
+                icon: 'heart',
+                iconColor: '#EAB308',
+                description: `Added "${item.title || 'Unknown Resource'}" to My List`,
+                resourceTitle: null,
+                formattedTime: formatDate(item.createdAt || item.addedAt)
+            });
         });
-    });
-    
-    // Sort by time (newest first)
-    activities.sort((a, b) => b.timestamp - a.timestamp);
+    }
     
     if (activities.length === 0) {
         container.innerHTML = '';
@@ -853,14 +853,15 @@ function renderClientActivity(purchases, savedItems) {
     
     container.innerHTML = activities.slice(0, 10).map(activity => `
         <div class="activity-item" style="display: flex; align-items: center; gap: 1rem; padding: 0.75rem; border-bottom: 1px solid #E5E7EB;">
-            <div style="width: 32px; height: 32px; border-radius: 50%; background: ${activity.bgColor}; display: flex; align-items: center; justify-content: center;">
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: ${activity.iconColor}15; display: flex; align-items: center; justify-content: center;">
                 <i class="fas fa-${activity.icon}" style="color: ${activity.iconColor}; font-size: 0.75rem;"></i>
             </div>
             <div style="flex: 1;">
-                <div style="font-size: 0.875rem; color: #1F2937;">${activity.title}</div>
+                <div style="font-size: 0.875rem; color: #1F2937;">${escapeHtml(activity.description)}</div>
+                ${activity.resourceTitle ? `<div style="font-size: 0.75rem; color: #6B7280;">${escapeHtml(activity.resourceTitle)}</div>` : ''}
             </div>
             <div style="font-size: 0.75rem; color: #9CA3AF;">
-                ${formatDate(activity.time)}
+                ${activity.formattedTime}
             </div>
         </div>
     `).join('');

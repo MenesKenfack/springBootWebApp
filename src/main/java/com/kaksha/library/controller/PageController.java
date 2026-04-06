@@ -1,14 +1,22 @@
 package com.kaksha.library.controller;
 
+import com.kaksha.library.service.ResourceService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import java.util.List;
 
 /**
  * Controller for serving Thymeleaf view templates.
  * Handles all page routing for the web application.
  */
 @Controller
+@RequiredArgsConstructor
 public class PageController {
+
+    private final ResourceService resourceService;
 
     // Public pages
     @GetMapping("/")
@@ -38,7 +46,9 @@ public class PageController {
     }
 
     @GetMapping("/resources")
-    public String resources() {
+    public String resources(Model model) {
+        List<String> authors = resourceService.getAvailableAuthors();
+        model.addAttribute("authors", authors);
         return "resources";
     }
 

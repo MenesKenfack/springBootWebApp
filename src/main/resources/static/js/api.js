@@ -107,7 +107,6 @@ const apiClient = {
             
             return data;
         } catch (error) {
-            console.error('API Error:', error);
             // If it's a syntax error (JSON parse error), provide better message
             if (error instanceof SyntaxError) {
                 throw new Error('Server returned invalid response. Please try again later.');
@@ -332,6 +331,21 @@ const myListAPI = {
     }
 };
 
+// Activity Log API
+const activityAPI = {
+    async getRecent(limit = 10) {
+        return apiClient.get(`/activities/recent?limit=${limit}`);
+    },
+    
+    async getSinceLastLogin() {
+        return apiClient.get('/activities/since-last-login');
+    },
+    
+    async getSessionActivities(sessionId) {
+        return apiClient.get(`/activities/session/${sessionId}`);
+    }
+};
+
 // Analytics API
 const analyticsAPI = {
     async generateReport(dateRange = 'LAST_30_DAYS', reportType = 'SUMMARY') {
@@ -523,9 +537,16 @@ function setupNavigation() {
 }
 
 // Logout Function
-function logout() {
-    TokenManager.clearTokens();
-    window.location.href = '/login';
+async function logout() {
+    try {
+        // Call backend logout to log the activity
+        await apiClient.post('/auth/logout', {});
+    } catch (error) {
+        console.error('Logout API call failed:', error);
+    } finally {
+        TokenManager.clearTokens();
+        window.location.href = '/login';
+    }
 }
 
 // Sidebar Toggle

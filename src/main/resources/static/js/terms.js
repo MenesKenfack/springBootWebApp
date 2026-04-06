@@ -18,7 +18,6 @@ async function loadTerms() {
             Toast.error(response.message || 'Failed to load terms');
         }
     } catch (error) {
-        console.error('Error loading terms:', error);
         Toast.error('Failed to load terms');
     }
 }
@@ -37,7 +36,7 @@ async function loadActiveTerms() {
             `;
         }
     } catch (error) {
-        console.error('Error loading active terms:', error);
+        Toast.error('Failed to load active terms');
         document.getElementById('activeTermsContent').innerHTML = `
             <div class="alert alert-info">
                 <i class="fas fa-info-circle"></i> No active terms currently set.
@@ -158,7 +157,6 @@ async function editTerms(id) {
             Toast.error(response.message || 'Failed to load terms');
         }
     } catch (error) {
-        console.error('Error loading terms:', error);
         Toast.error('Failed to load terms for editing');
     }
 }
@@ -188,7 +186,6 @@ async function viewTerms(id) {
             Toast.error(response.message || 'Failed to load terms');
         }
     } catch (error) {
-        console.error('Error viewing terms:', error);
         Toast.error('Failed to load terms');
     }
 }
@@ -235,7 +232,6 @@ async function saveTerms() {
             Toast.error(response.message || 'Failed to save terms');
         }
     } catch (error) {
-        console.error('Error saving terms:', error);
         Toast.error(error.message || 'Failed to save terms');
     }
 }
@@ -256,7 +252,6 @@ async function activateTerms(id) {
             Toast.error(response.message || 'Failed to activate terms');
         }
     } catch (error) {
-        console.error('Error activating terms:', error);
         Toast.error(error.message || 'Failed to activate terms');
     }
 }
@@ -277,7 +272,6 @@ async function deleteTerms(id) {
             Toast.error(response.message || 'Failed to delete terms');
         }
     } catch (error) {
-        console.error('Error deleting terms:', error);
         Toast.error(error.message || 'Failed to delete terms');
     }
 }

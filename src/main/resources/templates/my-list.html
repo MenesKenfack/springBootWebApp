@@ -270,13 +270,13 @@
 
         async function loadMyList() {
             try {
-                // For demo, load from localStorage or generate mock data
-                const saved = localStorage.getItem('myListData');
-                if (saved) {
-                    myListData = JSON.parse(saved);
-                } else {
-                    // Generate mock data for demonstration
-                    generateMockData();
+                const response = await myListAPI.getMyList();
+                if (response.success && response.data) {
+                    myListData = {
+                        favorites: response.data.favorites || [],
+                        reading: response.data.reading || [],
+                        rated: response.data.rated || []
+                    };
                 }
                 
                 updateStats();
@@ -284,63 +284,13 @@
                 renderReading();
                 renderRated();
             } catch (error) {
-                console.error('Failed to load my list:', error);
                 Toast.error('Failed to load your list');
             }
         }
 
-        function generateMockData() {
-            const categories = ['BOOK', 'JOURNAL', 'ARTICLE', 'VIDEO'];
-            const titles = [
-                'Advanced Java Programming',
-                'Data Structures and Algorithms',
-                'Web Development Fundamentals',
-                'Machine Learning Basics',
-                'Database Design Principles',
-                'Cloud Computing Essentials'
-            ];
-
-            // Generate favorites
-            myListData.favorites = titles.slice(0, 4).map((title, i) => ({
-                resourceID: i + 1,
-                title: title,
-                category: categories[i % categories.length],
-                author: 'Author ' + (i + 1),
-                addedDate: new Date(Date.now() - i * 86400000).toISOString(),
-                isFavorite: true
-            }));
-
-            // Generate reading progress
-            myListData.reading = titles.slice(2, 5).map((title, i) => ({
-                resourceID: i + 3,
-                title: title,
-                category: categories[(i + 2) % categories.length],
-                author: 'Author ' + (i + 3),
-                progress: Math.floor(Math.random() * 80) + 10,
-                lastRead: new Date(Date.now() - i * 43200000).toISOString()
-            }));
-
-            // Generate rated items
-            myListData.rated = titles.slice(0, 3).map((title, i) => ({
-                resourceID: i + 1,
-                title: title,
-                category: categories[i % categories.length],
-                author: 'Author ' + (i + 1),
-                rating: Math.floor(Math.random() * 2) + 4,
-                comment: 'Great resource! Very informative and well-structured.',
-                ratedDate: new Date(Date.now() - i * 172800000).toISOString()
-            }));
-
-            saveMyList();
-        }
-
-        function saveMyList() {
-            localStorage.setItem('myListData', JSON.stringify(myListData));
-        }
-
         function updateStats() {
-            document.getElementById('favoritesCount').textContent = myListData.favorites.length;
-            document.getElementById('readingCount').textContent = myListData.reading.length;
+            document.getElementById('favoritesCount').textContent = myListData.favorites ? myListData.favorites.length : 0;
+            document.getElementById('readingCount').textContent = myListData.reading ? myListData.reading.length : 0;
         }
 
         function switchTab(tab) {
@@ -359,7 +309,7 @@
             const grid = document.getElementById('favoritesGrid');
             const empty = document.getElementById('noFavorites');
             
-            if (myListData.favorites.length === 0) {
+            if (!myListData.favorites || myListData.favorites.length === 0) {
                 grid.innerHTML = '';
                 empty.style.display = 'block';
                 return;
@@ -370,7 +320,7 @@
                 <div class="resource-card">
                     <div class="resource-image">
                         <i class="fas fa-${getCategoryIcon(item.category)}"></i>
-                        <button class="favorite-btn active" onclick="toggleFavorite(${item.resourceID})" style="position: absolute; top: 0.5rem; right: 0.5rem; background: white; border: none; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <button class="favorite-btn active" onclick="toggleFavorite(${item.resourceId})" style="position: absolute; top: 0.5rem; right: 0.5rem; background: white; border: none; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                             <i class="fas fa-heart" style="color: #EF4444;"></i>
                         </button>
                     </div>
@@ -379,7 +329,7 @@
                         <p>${escapeHtml(item.author)}</p>
                         <div class="resource-meta">
                             <span class="resource-badge">${item.category}</span>
-                            <button class="btn btn-sm btn-primary" onclick="openReadModal(${item.resourceID}, '${escapeHtml(item.title)}')">
+                            <button class="btn btn-sm btn-primary" onclick="openReadModal(${item.resourceId}, '${escapeHtml(item.title)}')">
                                 <i class="fas fa-book-open"></i> Read
                             </button>
                         </div>
@@ -392,7 +342,7 @@
             const grid = document.getElementById('readingGrid');
             const empty = document.getElementById('noReading');
             
-            if (myListData.reading.length === 0) {
+            if (!myListData.reading || myListData.reading.length === 0) {
                 grid.innerHTML = '';
                 empty.style.display = 'block';
                 return;
@@ -418,7 +368,7 @@
                         </div>
                         <div class="resource-meta">
                             <span class="resource-badge">${item.category}</span>
-                            <button class="btn btn-sm btn-primary" onclick="openReadModal(${item.resourceID}, '${escapeHtml(item.title)}', ${item.progress})">
+                            <button class="btn btn-sm btn-primary" onclick="openReadModal(${item.resourceId}, '${escapeHtml(item.title)}', ${item.progress})">
                                 <i class="fas fa-book-reader"></i> Continue
                             </button>
                         </div>
@@ -431,7 +381,7 @@
             const grid = document.getElementById('ratedGrid');
             const empty = document.getElementById('noRated');
             
-            if (myListData.rated.length === 0) {
+            if (!myListData.rated || myListData.rated.length === 0) {
                 grid.innerHTML = '';
                 empty.style.display = 'block';
                 return;
@@ -453,7 +403,7 @@
                         <p style="font-size: 0.8125rem; color: #6B7280; font-style: italic; margin-top: 0.5rem;">"${escapeHtml(item.comment)}"</p>
                         <div class="resource-meta" style="margin-top: 0.75rem;">
                             <span class="resource-badge">${item.category}</span>
-                            <button class="btn btn-sm btn-secondary" onclick="openRatingModal(${item.resourceID}, '${escapeHtml(item.title)}', ${item.rating})">
+                            <button class="btn btn-sm btn-secondary" onclick="openRatingModal(${item.resourceId}, '${escapeHtml(item.title)}', ${item.rating})">
                                 <i class="fas fa-edit"></i> Edit
                             </button>
                         </div>
@@ -474,15 +424,19 @@
             return icons[category] || 'book';
         }
 
-        function toggleFavorite(resourceId) {
-            const index = myListData.favorites.findIndex(f => f.resourceID === resourceId);
-            if (index > -1) {
-                myListData.favorites.splice(index, 1);
-                Toast.success('Removed from favorites');
+        async function toggleFavorite(resourceId) {
+            try {
+                const index = myListData.favorites.findIndex(f => f.resourceId === resourceId);
+                if (index > -1) {
+                    await myListAPI.removeFavorite(resourceId);
+                    myListData.favorites.splice(index, 1);
+                    Toast.success('Removed from favorites');
+                }
+                updateStats();
+                renderFavorites();
+            } catch (error) {
+                Toast.error('Failed to update favorites');
             }
-            saveMyList();
-            updateStats();
-            renderFavorites();
         }
 
         function openReadModal(resourceId, title, progress = 0) {
@@ -514,21 +468,26 @@
             document.getElementById('readModal').style.display = 'none';
         }
 
-        function markAsRead() {
+        async function markAsRead() {
             const resourceId = currentResourceId;
-            const index = myListData.reading.findIndex(r => r.resourceID === resourceId);
             
-            if (index > -1) {
-                myListData.reading[index].progress = 100;
-            } else {
-                // Add to reading list if not exists
-                Toast.info('Resource marked as read');
+            try {
+                // Update reading progress to 100% via API
+                await myListAPI.updateReadingProgress(resourceId, 100);
+                
+                // Refresh reading list from server
+                const readingResponse = await myListAPI.getReadingProgress();
+                if (readingResponse.success) {
+                    myListData.reading = readingResponse.data || [];
+                }
+                
+                updateStats();
+                renderReading();
+                closeReadModal();
+                Toast.success('Marked as read!');
+            } catch (error) {
+                Toast.error('Failed to update reading progress');
             }
-            
-            saveMyList();
-            renderReading();
-            closeReadModal();
-            Toast.success('Marked as read!');
         }
 
         function openRatingModal(resourceId, title, currentRatingValue = 0) {
@@ -565,7 +524,7 @@
             });
         }
 
-        function submitRating() {
+        async function submitRating() {
             if (currentRating === 0) {
                 Toast.warning('Please select a rating');
                 return;
@@ -574,32 +533,21 @@
             const resourceId = currentResourceId;
             const comment = document.getElementById('ratingComment').value;
             
-            const existingIndex = myListData.rated.findIndex(r => r.resourceID === resourceId);
-            if (existingIndex > -1) {
-                myListData.rated[existingIndex].rating = currentRating;
-                myListData.rated[existingIndex].comment = comment;
-                myListData.rated[existingIndex].ratedDate = new Date().toISOString();
-            } else {
-                // Find resource in favorites or reading
-                const resource = myListData.favorites.find(f => f.resourceID === resourceId) || 
-                               myListData.reading.find(r => r.resourceID === resourceId);
-                if (resource) {
-                    myListData.rated.push({
-                        resourceID: resourceId,
-                        title: resource.title,
-                        category: resource.category,
-                        author: resource.author,
-                        rating: currentRating,
-                        comment: comment,
-                        ratedDate: new Date().toISOString()
-                    });
+            try {
+                const response = await myListAPI.rateResource(resourceId, currentRating, comment);
+                if (response.success) {
+                    // Refresh ratings from server
+                    const ratingsResponse = await myListAPI.getMyRatings();
+                    if (ratingsResponse.success) {
+                        myListData.rated = ratingsResponse.data || [];
+                    }
+                    renderRated();
+                    closeRatingModal();
+                    Toast.success('Rating submitted!');
                 }
+            } catch (error) {
+                Toast.error('Failed to submit rating');
             }
-            
-            saveMyList();
-            renderRated();
-            closeRatingModal();
-            Toast.success('Rating submitted!');
         }
 
         function escapeHtml(text) {

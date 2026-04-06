@@ -40,6 +40,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final CustomUserDetailsService userDetailsService;
     private final MailService mailService;
+    private final ActivityLogService activityLogService;
     
     @Transactional
     @SuppressWarnings("null")
@@ -123,6 +124,20 @@ public class AuthService {
             
             log.info("Login successful for: {}", request.getEmail());
             
+            // Log login activity
+            try {
+                String sessionId = token.substring(0, Math.min(20, token.length()));
+                activityLogService.logActivity(
+                    user.getUserID(),
+                    "LOGIN",
+                    "User logged in successfully",
+                    null,
+                    sessionId
+                );
+            } catch (Exception e) {
+                log.error("Failed to log login activity: {}", e.getMessage());
+            }
+            
             return AuthResponse.builder()
                     .success(true)
                     .message("Login successful")
@@ -189,6 +204,11 @@ public class AuthService {
                         .verified(user.isVerified())
                         .build())
                 .build();
+    }
+    
+    public Long getCurrentUserId(String email) {
+        User user = userDetailsService.findUserByEmail(email);
+        return user.getUserID();
     }
     
     @Transactional

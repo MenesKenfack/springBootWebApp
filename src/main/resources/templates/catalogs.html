@@ -221,7 +221,6 @@
                     Toast.error(response.message || 'Failed to load catalogs');
                 }
             } catch (error) {
-                console.error('Failed to load catalogs:', error);
                 Toast.error('Failed to load catalogs. Please try again.');
             }
         }
@@ -319,7 +318,6 @@
                     Toast.error(response.message || 'Failed to save catalog');
                 }
             } catch (error) {
-                console.error('Failed to save catalog:', error);
                 Toast.error(error.message || 'Failed to save catalog');
             }
         }
@@ -349,7 +347,6 @@
                     Toast.error(response.message || 'Failed to delete catalog');
                 }
             } catch (error) {
-                console.error('Failed to delete catalog:', error);
                 Toast.error(error.message || 'Failed to delete catalog');
             }
         }

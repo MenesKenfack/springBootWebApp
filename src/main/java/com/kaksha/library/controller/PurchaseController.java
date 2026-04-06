@@ -1,6 +1,8 @@
 package com.kaksha.library.controller;
 
 import com.kaksha.library.dto.*;
+import com.kaksha.library.model.entity.Client;
+import com.kaksha.library.repository.ClientRepository;
 import com.kaksha.library.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +20,7 @@ import java.util.Map;
 public class PurchaseController {
     
     private final PaymentService paymentService;
+    private final ClientRepository clientRepository;
     
     @PostMapping("/initiate")
     public ResponseEntity<ApiResponse<Map<String, Object>>> initiatePurchase(
@@ -46,12 +49,37 @@ public class PurchaseController {
         return ResponseEntity.ok().build();
     }
     
+    @GetMapping("/campay/callback/success")
+    public ResponseEntity<Void> handleCampaySuccess(
+            @RequestParam(value = "reference", required = false) String reference,
+            @RequestParam(value = "token", required = false) String token) {
+        log.info("CamPay success callback received. Reference: {}, Token: {}", reference, token);
+        // The actual payment status update is handled by webhook
+        // This endpoint redirects user back to application
+        return ResponseEntity.status(302)
+                .header("Location", "/purchases.html?status=success")
+                .build();
+    }
+    
+    @GetMapping("/campay/callback/failure")
+    public ResponseEntity<Void> handleCampayFailure(
+            @RequestParam(value = "reference", required = false) String reference,
+            @RequestParam(value = "token", required = false) String token) {
+        log.info("CamPay failure callback received. Reference: {}, Token: {}", reference, token);
+        return ResponseEntity.status(302)
+                .header("Location", "/purchases.html?status=failed")
+                .build();
+    }
+    
     @GetMapping("/history")
     public ResponseEntity<ApiResponse<List<PaymentResponse>>> getPurchaseHistory(Authentication authentication) {
-        // Note: This would need client ID from authentication
         log.info("Get purchase history for: {}", authentication.getName());
-        // Implementation would retrieve client ID and fetch payments
-        return ResponseEntity.ok(ApiResponse.success("Purchase history retrieved"));
+        
+        Client client = clientRepository.findByEmail(authentication.getName())
+                .orElseThrow(() -> new RuntimeException("Client not found"));
+        
+        List<PaymentResponse> payments = paymentService.getClientPayments(client.getUserID());
+        return ResponseEntity.ok(ApiResponse.success("Purchase history retrieved", payments));
     }
     
     @GetMapping("/recent")

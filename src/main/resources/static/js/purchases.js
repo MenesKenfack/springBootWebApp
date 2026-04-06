@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     setupNavigation();
     setupFilters();
+    checkPaymentStatus();
     loadPurchases();
 });
 
@@ -27,6 +28,20 @@ function setupFilters() {
     
     if (dateFilter) {
         dateFilter.addEventListener('change', () => applyFilters());
+    }
+}
+
+function checkPaymentStatus() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const status = urlParams.get('status');
+    
+    if (status === 'success') {
+        Toast.success('Payment completed successfully! Your resource is now available.');
+        // Clear the status from URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+    } else if (status === 'failed') {
+        Toast.error('Payment failed. Please try again or contact support if the issue persists.');
+        window.history.replaceState({}, document.title, window.location.pathname);
     }
 }
 

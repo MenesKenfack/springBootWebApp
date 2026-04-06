@@ -54,6 +54,9 @@ public interface LibraryResourceRepository extends JpaRepository<LibraryResource
     @Query("SELECT COUNT(r) FROM LibraryResource r")
     long countTotalResources();
     
-    @Query("SELECT r.category, COUNT(r) FROM LibraryResource r GROUP BY r.category")
+    @Query("SELECT DISTINCT r.category, COUNT(r) FROM LibraryResource r GROUP BY r.category")
     List<Object[]> countByCategory();
+    
+    @Query("SELECT DISTINCT r.author FROM LibraryResource r WHERE r.author IS NOT NULL AND r.author <> '' ORDER BY r.author")
+    List<String> findDistinctAuthors();
 }

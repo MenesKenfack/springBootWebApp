@@ -165,16 +165,13 @@
                     
                     <a href="#" class="view-more-link">View more</a>
                     
-                    <!-- Choose Publisher -->
+                    <!-- Choose Publisher (Authors) - Dynamic -->
                     <div class="filter-dropdown-section">
-                        <label class="filter-label">Choose Publisher</label>
+                        <label class="filter-label">Choose Author</label>
                         <div class="custom-select-wrapper">
-                            <select id="publisherFilter" class="custom-select">
-                                <option value="">Select Publisher</option>
-                                <option value="Penguin">Penguin Books</option>
-                                <option value="Harper">Harper Collins</option>
-                                <option value="Random">Random House</option>
-                                <option value="Simon">Simon & Schuster</option>
+                            <select id="authorFilter" class="custom-select">
+                                <option value="">Select Author</option>
+                                <option th:each="author : ${authors}" th:value="${author}" th:text="${author}">Author Name</option>
                             </select>
                             <i class="fas fa-chevron-down select-arrow"></i>
                         </div>
@@ -201,29 +198,6 @@
                         <div class="accordion-content expanded">
                             <div class="category-grid" id="categoryGrid">
                                 <!-- Dynamic categories will be loaded -->
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Price Range -->
-                    <div class="filter-section">
-                        <div class="accordion-header active" onclick="toggleAccordion(this)">
-                            <span>Price Range</span>
-                            <i class="fas fa-minus accordion-icon"></i>
-                        </div>
-                        <div class="accordion-content expanded">
-                            <div class="price-range-container">
-                                <div class="range-slider">
-                                    <div class="range-track">
-                                        <div class="range-fill" id="priceRangeFill"></div>
-                                    </div>
-                                    <div class="range-thumb" id="minThumb" style="left: 0%;"></div>
-                                    <div class="range-thumb" id="maxThumb" style="left: 100%;"></div>
-                                </div>
-                                <div class="price-labels">
-                                    <span class="price-min">XAF0</span>
-                                    <span class="price-max">XAF150000</span>
-                                </div>
                             </div>
                         </div>
                     </div>

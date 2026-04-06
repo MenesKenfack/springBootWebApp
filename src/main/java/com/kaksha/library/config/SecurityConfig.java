@@ -50,7 +50,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/resources/search").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/resources").permitAll()
                 .requestMatchers("/api/purchase/webhook").permitAll()
-                .requestMatchers("/api/purchase/campay/callback").permitAll()
+                .requestMatchers("/api/purchase/campay/callback/**").permitAll()
                 // Public pages (Thymeleaf templates)
                 .requestMatchers("/", "/index", "/login", "/register").permitAll()
                 .requestMatchers("/dashboard", "/resources", "/purchases", "/profile", "/my-list").permitAll()

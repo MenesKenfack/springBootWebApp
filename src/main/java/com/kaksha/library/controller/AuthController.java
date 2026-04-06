@@ -1,6 +1,7 @@
 package com.kaksha.library.controller;
 
 import com.kaksha.library.dto.*;
+import com.kaksha.library.service.ActivityLogService;
 import com.kaksha.library.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     
     private final AuthService authService;
+    private final ActivityLogService activityLogService;
     
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
@@ -29,6 +31,27 @@ public class AuthController {
         log.info("Login request received for: {}", request.getEmail());
         AuthResponse response = authService.login(request);
         return ResponseEntity.ok(response);
+    }
+    
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse<Void>> logout(Authentication authentication) {
+        String email = authentication.getName();
+        log.info("Logout request received for: {}", email);
+        
+        // Log logout activity before clearing context
+        try {
+            activityLogService.logActivity(
+                authService.getCurrentUserId(email),
+                "LOGOUT",
+                "User logged out",
+                null,
+                null
+            );
+        } catch (Exception e) {
+            log.error("Failed to log logout activity: {}", e.getMessage());
+        }
+        
+        return ResponseEntity.ok(ApiResponse.success("Logout successful"));
     }
     
     @PostMapping("/verify-email")

@@ -580,6 +580,11 @@ public class ResourceService {
         return result;
     }
     
+    public List<String> getAvailableAuthors() {
+        log.info("Fetching available authors from database");
+        return resourceRepository.findDistinctAuthors();
+    }
+    
     private String formatCategoryLabel(String category) {
         // Convert BOOK to Book, JOURNAL to Journal, etc.
         return category.substring(0, 1) + category.substring(1).toLowerCase();

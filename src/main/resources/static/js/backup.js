@@ -21,7 +21,7 @@ async function loadBackupSettings() {
             document.getElementById('autoBackupType').value = settings.backupType || 'FULL';
         }
     } catch (error) {
-        console.error('Error loading backup settings:', error);
+        Toast.error('Failed to load backup settings');
     }
 }
 
@@ -44,7 +44,6 @@ async function saveBackupSettings() {
             Toast.error(response.message || 'Failed to save settings');
         }
     } catch (error) {
-        console.error('Error saving backup settings:', error);
         Toast.error(error.message || 'Failed to save settings');
     }
 }
@@ -69,7 +68,6 @@ async function triggerManualBackup() {
             Toast.error(response.message || 'Failed to trigger backup');
         }
     } catch (error) {
-        console.error('Error triggering manual backup:', error);
         Toast.error(error.message || 'Failed to trigger backup');
     }
 }
@@ -84,7 +82,7 @@ async function loadBackupStatistics() {
             document.getElementById('totalSize').textContent = formatFileSize(stats.totalSize || 0);
         }
     } catch (error) {
-        console.error('Error loading backup statistics:', error);
+        Toast.error('Failed to load backup statistics');
     }
 }
 
@@ -122,7 +120,7 @@ async function loadLatestBackup() {
             document.getElementById('lastBackup').textContent = 'Never';
         }
     } catch (error) {
-        console.error('Error loading latest backup:', error);
+        Toast.error('Failed to load latest backup');
         document.getElementById('latestBackupContent').innerHTML = `
             <div class="alert alert-info">
                 <i class="fas fa-info-circle"></i> No backups available.
@@ -141,7 +139,6 @@ async function loadBackups() {
             Toast.error(response.message || 'Failed to load backups');
         }
     } catch (error) {
-        console.error('Error loading backups:', error);
         Toast.error('Failed to load backups');
     }
 }
@@ -248,7 +245,6 @@ async function createBackup() {
             Toast.error(response.message || 'Failed to create backup');
         }
     } catch (error) {
-        console.error('Error creating backup:', error);
         Toast.error(error.message || 'Failed to create backup');
     }
 }
@@ -268,7 +264,6 @@ async function restoreBackup(id) {
             Toast.error(response.message || 'Failed to restore backup');
         }
     } catch (error) {
-        console.error('Error restoring backup:', error);
         Toast.error(error.message || 'Failed to restore backup');
     }
 }
@@ -290,7 +285,6 @@ async function deleteBackup(id) {
             Toast.error(response.message || 'Failed to delete backup');
         }
     } catch (error) {
-        console.error('Error deleting backup:', error);
         Toast.error(error.message || 'Failed to delete backup');
     }
 }

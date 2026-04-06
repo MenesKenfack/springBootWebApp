@@ -278,10 +278,19 @@ async function showTermsModal(event) {
             `;
         }
     } catch (error) {
-        console.error('Failed to load terms:', error);
+        Toast.error('Failed to load terms. Using default terms.');
         contentDiv.innerHTML = `
             <div class="alert alert-info">
                 <h4>Terms and Conditions</h4>
+                <p>By using Kaksha Digital Library, you agree to:</p>
+                <ul style="margin-left: 1.5rem; line-height: 1.8;">
+                    <li>Use the platform for educational purposes only</li>
+                    <li>Respect copyright and intellectual property rights</li>
+                    <li>Not share your account credentials with others</li>
+                    <li>Comply with all applicable laws and regulations</li>
+                    <li>Accept our privacy policy and data handling practices</li>
+                </ul>
+                <p style="margin-top: 1rem;">Please contact support for the complete terms and conditions.</p>
                 <p>By registering, you agree to our Terms of Service and Privacy Policy. 
                 Please contact support for complete terms.</p>
             </div>
