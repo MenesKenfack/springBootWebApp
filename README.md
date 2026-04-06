@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Kaksha Digital Library
 
 A full-stack Spring Boot web application for managing a digital library platform. Built with Spring Boot 3.3+, Java 21, MySQL, and vanilla HTML/CSS/JS.
@@ -285,6 +284,3 @@ MIT License - See LICENSE file for details
 
 For issues or questions, please contact support@kaksha.com
 =======
-# digitalLibrarySpringBoot
-Build a fullstack web digital library application with springboot
->>>>>>> aaa48f3e93fee2b0714e575f35d68d622989d6a3
