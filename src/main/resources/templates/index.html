@@ -269,7 +269,7 @@
                             <div class="book-card" th:each="resource : ${trendingResources}" th:href="@{/resource/{id}(id=${resource.resourceID})}">
                                 <div class="book-cover-wrapper">
                                     <img th:src="${resource.resourceImage != null ? resource.resourceImage : 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=300&h=450&fit=crop'}" 
-                                         th:alt="${resource.title}" class="book-cover">
+                                        th:alt="${resource.title}" class="book-cover">
                                 </div>
                                 <div class="book-info">
                                     <h3 class="book-title" th:text="${resource.title}">Book Title</h3>
@@ -278,7 +278,7 @@
                                         <span class="book-price" th:text="'XAF' + ${resource.price}">XAF0</span>
                                         <div class="book-rating">
                                             <span class="star" th:each="i : ${#numbers.sequence(1, 5)}" 
-                                                  th:style="${i <= resource.averageRating} ? '' : 'color: #d1d5db;'">★</span>
+                                                th:style="${i <= resource.averageRating} ? '' : 'color: #d1d5db;'">★</span>
                                         </div>
                                     </div>
                                 </div>
@@ -323,7 +323,7 @@
                             <div class="book-card" th:each="resource : ${bestSellingResources}" th:href="@{/resource/{id}(id=${resource.resourceID})}">
                                 <div class="book-cover-wrapper">
                                     <img th:src="${resource.resourceImage != null ? resource.resourceImage : 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=300&h=450&fit=crop'}" 
-                                         th:alt="${resource.title}" class="book-cover">
+                                        th:alt="${resource.title}" class="book-cover">
                                 </div>
                                 <div class="book-info">
                                     <h3 class="book-title" th:text="${resource.title}">Book Title</h3>
@@ -331,7 +331,7 @@
                                     <div class="book-price-rating">
                                         <span class="book-price" th:text="'XAF' + ${resource.price}">XAF0</span>
                                         <div class="book-rating">
-                                            <span class="star" th:each="i : ${#numbers.sequence(1, 5)}" 
+                                            <span class="star" th:each="i : ${#numbers.sequence(1, 5)}"
                                                 th:style="${i <= resource.averageRating} ? '' : 'color: #d1d5db;'">★</span>
                                         </div>
                                     </div>
@@ -431,7 +431,7 @@
                             <div class="book-card" th:each="resource : ${newlyAddedResources}" th:href="@{/resource/{id}(id=${resource.resourceID})}">
                                 <div class="book-cover-wrapper">
                                     <img th:src="${resource.resourceImage != null ? resource.resourceImage : 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=300&h=450&fit=crop'}" 
-                                         th:alt="${resource.title}" class="book-cover">
+                                        th:alt="${resource.title}" class="book-cover">
                                 </div>
                                 <div class="book-info">
                                     <h3 class="book-title" th:text="${resource.title}">Book Title</h3>
@@ -439,8 +439,8 @@
                                     <div class="book-price-rating">
                                         <span class="book-price" th:text="'XAF' + ${resource.price}">XAF0</span>
                                         <div class="book-rating">
-                                            <span class="star" th:each="i : ${#numbers.sequence(1, 5)}" 
-                                                  th:style="${i <= resource.averageRating} ? '' : 'color: #d1d5db;'">★</span>
+                                            <span class="star" th:each="i : ${#numbers.sequence(1, 5)}"
+                                                th:style="${i <= resource.averageRating} ? '' : 'color: #d1d5db;'">★</span>
                                         </div>
                                     </div>
                                 </div>
