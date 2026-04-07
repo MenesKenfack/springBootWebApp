@@ -19,6 +19,11 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     Optional<Client> findByIdWithResources(@Param("clientId") Long clientId);
     
     long countByStatusTrue();
+    
     @Query("SELECT COUNT(c) FROM Client c WHERE c.createdAt >= :date")
     long countByCreatedAtAfter(@Param("date") java.time.LocalDateTime date);
+    
+    // Dashboard stats - count premium tier users
+    @Query("SELECT COUNT(c) FROM Client c WHERE c.userTier = 'PREMIUM'")
+    long countByUserTierPremium();
 }

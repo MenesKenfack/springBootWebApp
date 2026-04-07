@@ -35,4 +35,10 @@ public class DashboardStatsResponse {
     private long totalUsers;
     private long totalPurchases;
     private BigDecimal totalRevenue;
+    
+    // Manager-specific stats (added to fix dashboard)
+    private long pendingVerifications;
+    private long premiumUsers;
+    private long verifiedUsers;
+    private String systemHealth;
 }

@@ -47,6 +47,12 @@ public class AnalyticsService {
         
         long totalPurchases = paymentsRepository.countSuccessfulPayments();
         
+        // Calculate manager-specific stats
+        long pendingVerifications = userRepository.countByVerifiedFalse();
+        long premiumUsers = clientRepository.countByUserTierPremium();
+        long verifiedUsers = userRepository.countByVerifiedTrue();
+        String systemHealth = calculateSystemHealth();
+        
         // Client-specific stats
         long totalResourcesAccessed = 0;
         long myPurchases = 0;
@@ -82,6 +88,10 @@ public class AnalyticsService {
                 .myPurchases(myPurchases)
                 .resourcesByCategory(resourcesByCategory)
                 .favoriteCategory(favoriteCategory)
+                .pendingVerifications(pendingVerifications)
+                .premiumUsers(premiumUsers)
+                .verifiedUsers(verifiedUsers)
+                .systemHealth(systemHealth)
                 .build();
     }
     
@@ -184,6 +194,22 @@ public class AnalyticsService {
         }
         
         return stats;
+    }
+    
+    private String calculateSystemHealth() {
+        // Simple health calculation based on recent activity
+        try {
+            LocalDateTime last24Hours = LocalDateTime.now().minusHours(24);
+            long recentPayments = paymentsRepository.countPaymentsBetweenDates(last24Hours, LocalDateTime.now());
+            long recentUsers = clientRepository.countByCreatedAtAfter(last24Hours);
+            
+            if (recentPayments >= 0 && recentUsers >= 0) {
+                return "Good";
+            }
+            return "Fair";
+        } catch (Exception e) {
+            return "Unknown";
+        }
     }
     
     private List<AnalyticsReportResponse.CategoryStats> generateCategoryStats() {

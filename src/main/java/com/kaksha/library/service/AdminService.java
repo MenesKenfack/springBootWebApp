@@ -116,17 +116,43 @@ public class AdminService {
     }
     
     @Transactional
-    public UserResponse updateUser(Long id, UpdateResourceRequest request) {
+    public UserResponse updateUser(Long id, UpdateUserRequest request) {
         Objects.requireNonNull(id, "User ID cannot be null");
+        Objects.requireNonNull(request, "Request cannot be null");
+        log.info("Updating user: {}", id);
+        
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User", id));
         
-        // Update fields if provided
-        // Note: Using UpdateResourceRequest as a generic update request
+        // Check for email uniqueness if changed
+        if (!user.getEmail().equals(request.getEmail()) && userRepository.existsByEmail(request.getEmail())) {
+            throw new BadRequestException("Email is already registered");
+        }
         
-        Objects.requireNonNull(user, "User cannot be null");
-        userRepository.save(user);
-        return mapToUserResponse(user);
+        // Check for username uniqueness if changed
+        if (!user.getUsername().equals(request.getUsername()) && userRepository.existsByUsername(request.getUsername())) {
+            throw new BadRequestException("Username is already taken");
+        }
+        
+        // Update fields
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setUsername(request.getUsername());
+        user.setDateOfBirth(request.getDateOfBirth());
+        user.setEmail(request.getEmail());
+        
+        // Update password only if provided
+        if (request.getPassword() != null && !request.getPassword().isEmpty()) {
+            if (!request.getPassword().equals(request.getConfirmPassword())) {
+                throw new BadRequestException("Passwords do not match");
+            }
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+        }
+        
+        User saved = userRepository.save(user);
+        log.info("User updated: {}", id);
+        
+        return mapToUserResponse(saved);
     }
     
     @Transactional

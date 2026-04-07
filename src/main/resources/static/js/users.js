@@ -188,6 +188,12 @@ function editUser(userId) {
     document.getElementById('password').value = '';
     document.getElementById('confirmPassword').value = '';
     
+    // Make password optional when editing
+    document.getElementById('password').removeAttribute('required');
+    document.getElementById('confirmPassword').removeAttribute('required');
+    document.getElementById('passwordRequired').textContent = '';
+    document.getElementById('confirmPasswordRequired').textContent = '';
+    
     document.getElementById('userModal').style.display = 'flex';
 }
 
@@ -196,6 +202,13 @@ function openAddLibrarianModal() {
     document.getElementById('modalTitle').textContent = 'Add Librarian';
     document.getElementById('userType').value = 'ROLE_LIBRARIAN';
     document.getElementById('userForm').reset();
+    
+    // Make password required for new users
+    document.getElementById('password').setAttribute('required', '');
+    document.getElementById('confirmPassword').setAttribute('required', '');
+    document.getElementById('passwordRequired').textContent = '*';
+    document.getElementById('confirmPasswordRequired').textContent = '*';
+    
     document.getElementById('userModal').style.display = 'flex';
 }
 
@@ -204,6 +217,13 @@ function openAddManagerModal() {
     document.getElementById('modalTitle').textContent = 'Add Manager';
     document.getElementById('userType').value = 'ROLE_MANAGER';
     document.getElementById('userForm').reset();
+    
+    // Make password required for new users
+    document.getElementById('password').setAttribute('required', '');
+    document.getElementById('confirmPassword').setAttribute('required', '');
+    document.getElementById('passwordRequired').textContent = '*';
+    document.getElementById('confirmPasswordRequired').textContent = '*';
+    
     document.getElementById('userModal').style.display = 'flex';
 }
 
@@ -220,30 +240,45 @@ async function handleUserSubmit(e) {
         confirmPassword: document.getElementById('confirmPassword').value
     };
     
-    if (data.password !== data.confirmPassword) {
-        Toast.error('Passwords do not match');
-        return;
+    // Validate passwords only if provided (for updates) or always for new users
+    if (data.password || data.confirmPassword) {
+        if (data.password !== data.confirmPassword) {
+            Toast.error('Passwords do not match');
+            return;
+        }
+    }
+    
+    // If editing and no password provided, remove it from data
+    if (currentUserId && !data.password) {
+        delete data.password;
+        delete data.confirmPassword;
     }
     
     const userType = document.getElementById('userType').value;
     
     try {
         let response;
-        if (userType === 'ROLE_MANAGER') {
-            response = await adminAPI.createManager(data);
+        if (currentUserId) {
+            // Update existing user
+            response = await adminAPI.updateUser(currentUserId, data);
         } else {
-            response = await adminAPI.createLibrarian(data);
+            // Create new user
+            if (userType === 'ROLE_MANAGER') {
+                response = await adminAPI.createManager(data);
+            } else {
+                response = await adminAPI.createLibrarian(data);
+            }
         }
         
         if (response.success) {
-            Toast.success('User created successfully');
+            Toast.success(currentUserId ? 'User updated successfully' : 'User created successfully');
             closeModal();
             loadUsers();
         } else {
-            Toast.error(response.message || 'Failed to create user');
+            Toast.error(response.message || 'Failed to save user');
         }
     } catch (error) {
-        Toast.error(error.message || 'Failed to create user');
+        Toast.error(error.message || 'Failed to save user');
     }
 }
 

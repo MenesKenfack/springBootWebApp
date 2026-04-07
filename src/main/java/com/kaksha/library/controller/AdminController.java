@@ -58,6 +58,17 @@ public class AdminController {
         return ResponseEntity.ok(ApiResponse.success("Manager created successfully", manager));
     }
     
+    @PutMapping("/users/{id}")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public ResponseEntity<ApiResponse<UserResponse>> updateUser(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateUserRequest request) {
+        
+        log.info("Update user: {}", id);
+        UserResponse updated = adminService.updateUser(id, request);
+        return ResponseEntity.ok(ApiResponse.success("User updated successfully", updated));
+    }
+    
     @PutMapping("/users/{id}/role")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<ApiResponse<Void>> changeUserRole(

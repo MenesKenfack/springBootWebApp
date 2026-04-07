@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kaksha - Digital Library Platform</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css">
+    <link rel="stylesheet" th:href="@{/css/animations.css}" href="/css/animations.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
@@ -555,78 +556,77 @@
     <div class="mobile-nav" id="mobileNav">
         <a href="#features">Features</a>
         <a th:href="@{/resources}" href="/resources">Resources</a>
-        <a th:href="@{/login}" href="/login">Sign In</a>
         <a th:href="@{/login}" href="/login">Login</a>
         <a th:href="@{/register}" href="/register" style="color: #2563EB; font-weight: 600;">Get Started</a>
     </div>
 
-    <section class="landing-hero">
+    <section class="landing-hero hero-entrance">
         <div class="hero-content">
-            <div class="hero-badge">
+            <div class="hero-badge animate-float">
                 <i class="fas fa-sparkles"></i>
-                New Collection Available
+                <span>Free Forever</span>
             </div>
             <h1>Your Gateway to <span>Unlimited Knowledge</span></h1>
             <p>Access thousands of books, journals, and educational resources. Join our community of learners and discover a world of knowledge at your fingertips.</p>
             <div class="hero-stats">
-                <div class="stat-item">
-                    <span class="stat-number">50K+</span>
+                <div class="stat-item animate-on-scroll animate-fade-up" data-counter="50000">
+                    <span class="stat-number stat-number-count">50K+</span>
                     <span class="stat-label">Resources</span>
                 </div>
-                <div class="stat-item">
-                    <span class="stat-number">10K+</span>
+                <div class="stat-item animate-on-scroll animate-fade-up delay-100" data-counter="10000">
+                    <span class="stat-number stat-number-count">10K+</span>
                     <span class="stat-label">Active Users</span>
                 </div>
-                <div class="stat-item">
+                <div class="stat-item animate-on-scroll animate-fade-up delay-200">
                     <span class="stat-number">99%</span>
                     <span class="stat-label">Satisfaction</span>
                 </div>
             </div>
             <div class="hero-buttons">
-                <a th:href="@{/register}" href="/register" class="btn-hero btn-hero-primary">
+                <a th:href="@{/register}" href="/register" class="btn-hero btn-hero-primary btn-ripple">
                     <i class="fas fa-user-plus"></i> Get Started Free
                 </a>
-                <a th:href="@{/resources}" href="/resources" class="btn-hero btn-hero-secondary">
+                <a th:href="@{/resources}" href="/resources" class="btn-hero btn-hero-secondary btn-ripple">
                     <i class="fas fa-compass"></i> Explore Resources
                 </a>
             </div>
         </div>
-        <div class="hero-visual">
+        <div class="hero-visual hero-entrance-delayed">
             <div class="hero-image">
-                <i class="fas fa-book-reader"></i>
+                <i class="fas fa-book-reader animate-float"></i>
             </div>
         </div>
     </section>
 
     <section class="features" id="features">
         <div class="features-container">
-            <div class="section-header">
+            <div class="section-header animate-on-scroll animate-fade-up">
                 <h2>Everything You Need to Learn</h2>
                 <p>Powerful features designed to enhance your learning experience and make knowledge accessible.</p>
             </div>
-            <div class="features-grid">
-                <div class="feature-card">
+            <div class="features-grid stagger-children">
+                <div class="feature-card card-hover-lift animate-on-scroll animate-scale">
                     <div class="feature-icon">
                         <i class="fas fa-book-reader"></i>
                     </div>
                     <h3>Vast Collection</h3>
                     <p>Access thousands of books, journals, and educational resources curated by experts.</p>
                 </div>
-                <div class="feature-card">
+                <div class="feature-card card-hover-lift animate-on-scroll animate-scale">
                     <div class="feature-icon">
                         <i class="fas fa-mobile-alt"></i>
                     </div>
                     <h3>Access Anywhere</h3>
                     <p>Read and learn from any device with seamless cloud synchronization.</p>
                 </div>
-                <div class="feature-card">
+                <div class="feature-card card-hover-lift animate-on-scroll animate-scale">
                     <div class="feature-icon">
                         <i class="fas fa-shield-alt"></i>
                     </div>
                     <h3>Enterprise Security</h3>
                     <p>Your data is protected with bank-level encryption and security measures.</p>
                 </div>
-                <div class="feature-card">
+                <div class="feature-card card-hover-lift animate-on-scroll animate-scale">
                     <div class="feature-icon">
                         <i class="fas fa-chart-line"></i>
                     </div>
@@ -638,10 +638,10 @@
     </section>
 
     <section class="cta-section">
-        <div class="cta-container">
+        <div class="cta-container animate-on-scroll animate-scale">
             <h2>Ready to Start Learning?</h2>
             <p>Join thousands of students and professionals who trust Kaksha for their learning journey.</p>
-            <a th:href="@{/register}" href="/register" class="btn-cta">
+            <a th:href="@{/register}" href="/register" class="btn-cta btn-ripple btn-glow">
                 <i class="fas fa-rocket"></i> Start Learning Today
             </a>
         </div>
@@ -665,6 +665,7 @@
         </div>
     </footer>
 
+    <script th:src="@{/js/animations.js}" src="/js/animations.js"></script>
     <script>
         // Mobile menu toggle
         const mobileMenuToggle = document.getElementById('mobileMenuToggle');

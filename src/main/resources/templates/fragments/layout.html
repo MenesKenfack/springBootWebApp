@@ -5,13 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${title + ' - Kaksha Digital Library'}">Kaksha Digital Library</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css">
+    <link rel="stylesheet" th:href="@{/css/animations.css}" href="/css/animations.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="dashboard-page">
     <div class="dashboard-container">
         <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
+        <aside class="sidebar sidebar-slide" id="sidebar">
             <div class="sidebar-header">
                 <div class="logo">
                     <i class="fas fa-book-open"></i>
@@ -23,46 +24,46 @@
             </div>
             
             <nav class="sidebar-nav">
-                <a th:href="@{/dashboard}" href="/dashboard" class="nav-item" th:classappend="${activePage == 'dashboard'} ? 'active' : ''">
+                <a th:href="@{/dashboard}" href="/dashboard" class="nav-item nav-item-animate" th:classappend="${activePage == 'dashboard'} ? 'active' : ''">
                     <i class="fas fa-home"></i>
                     <span>Dashboard</span>
                 </a>
-                <a th:href="@{/resources}" href="/resources" class="nav-item" th:classappend="${activePage == 'resources'} ? 'active' : ''">
+                <a th:href="@{/resources}" href="/resources" class="nav-item nav-item-animate" th:classappend="${activePage == 'resources'} ? 'active' : ''">
                     <i class="fas fa-book"></i>
                     <span>Resources</span>
                 </a>
-                <a th:href="@{/manage-resources}" class="nav-item" id="manageResourcesNav" style="display: none;">
+                <a th:href="@{/manage-resources}" class="nav-item nav-item-animate" id="manageResourcesNav" style="display: none;">
                     <i class="fas fa-cog"></i>
                     <span>Manage Resources</span>
                 </a>
-                <a th:href="@{/catalogs}" class="nav-item" id="catalogsNav" style="display: none;">
+                <a th:href="@{/catalogs}" class="nav-item nav-item-animate" id="catalogsNav" style="display: none;">
                     <i class="fas fa-folder-open"></i>
                     <span>Catalogs</span>
                 </a>
-                <a th:href="@{/purchases}" href="/purchases" class="nav-item" id="purchasesNav" style="display: none;" th:classappend="${activePage == 'purchases'} ? 'active' : ''">
+                <a th:href="@{/purchases}" href="/purchases" class="nav-item nav-item-animate" id="purchasesNav" style="display: none;" th:classappend="${activePage == 'purchases'} ? 'active' : ''">
                     <i class="fas fa-shopping-cart"></i>
                     <span>Purchases</span>
                 </a>
-                <a th:href="@{/my-list}" href="/my-list" class="nav-item" id="myListNav" style="display: none;" th:classappend="${activePage == 'my-list'} ? 'active' : ''">
+                <a th:href="@{/my-list}" href="/my-list" class="nav-item nav-item-animate" id="myListNav" style="display: none;" th:classappend="${activePage == 'my-list'} ? 'active' : ''">
                     <i class="fas fa-heart"></i>
                     <span>My List</span>
                 </a>
-                <a th:href="@{/analytics}" href="/analytics" class="nav-item" id="analyticsNav" style="display: none;" th:classappend="${activePage == 'analytics'} ? 'active' : ''">
+                <a th:href="@{/analytics}" href="/analytics" class="nav-item nav-item-animate" id="analyticsNav" style="display: none;" th:classappend="${activePage == 'analytics'} ? 'active' : ''">
                     <i class="fas fa-chart-bar"></i>
                     <span>Analytics</span>
                 </a>
-                <a th:href="@{/users}" href="/users" class="nav-item" id="usersNav" style="display: none;" th:classappend="${activePage == 'users'} ? 'active' : ''">
+                <a th:href="@{/users}" href="/users" class="nav-item nav-item-animate" id="usersNav" style="display: none;" th:classappend="${activePage == 'users'} ? 'active' : ''">
                     <i class="fas fa-users"></i>
                     <span>Users</span>
                 </a>
-                <a th:href="@{/profile}" href="/profile" class="nav-item" th:classappend="${activePage == 'profile'} ? 'active' : ''">
+                <a th:href="@{/profile}" href="/profile" class="nav-item nav-item-animate" th:classappend="${activePage == 'profile'} ? 'active' : ''">
                     <i class="fas fa-user"></i>
                     <span>Profile</span>
                 </a>
             </nav>
             
             <div class="sidebar-footer">
-                <button class="btn btn-logout" onclick="logout()">
+                <button class="btn btn-logout btn-press" onclick="logout()">
                     <i class="fas fa-sign-out-alt"></i>
                     <span>Logout</span>
                 </button>
@@ -93,6 +94,7 @@
     </div>
     
     <script th:src="@{/js/api.js}" src="/js/api.js"></script>
+    <script th:src="@{/js/animations.js}" src="/js/animations.js"></script>
     <th:block th:replace="${scripts} ?: ~{}">
         <!-- Additional scripts -->
     </th:block>

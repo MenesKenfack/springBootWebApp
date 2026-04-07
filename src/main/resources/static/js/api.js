@@ -372,6 +372,10 @@ const adminAPI = {
         return apiClient.post('/admin/managers', data);
     },
     
+    async updateUser(id, data) {
+        return apiClient.put(`/admin/users/${id}`, data);
+    },
+    
     async changeUserRole(id, role) {
         return apiClient.put(`/admin/users/${id}/role?role=${role}`);
     },
@@ -390,6 +394,37 @@ const adminAPI = {
     
     async createBackup(managerId, name, type) {
         return apiClient.post(`/admin/backups?managerId=${managerId}&backupName=${name}&backupType=${type}`);
+    }
+};
+
+// Reports API
+const reportsAPI = {
+    async getAll() {
+        return apiClient.get('/reports');
+    },
+    
+    async getById(id) {
+        return apiClient.get(`/reports/${id}`);
+    },
+    
+    async create(data) {
+        return apiClient.post('/reports', data);
+    },
+    
+    async update(id, data) {
+        return apiClient.put(`/reports/${id}`, data);
+    },
+    
+    async delete(id) {
+        return apiClient.delete(`/reports/${id}`);
+    },
+    
+    async regenerate(id) {
+        return apiClient.post(`/reports/${id}/regenerate`);
+    },
+    
+    async download(id) {
+        return apiClient.get(`/reports/${id}/download`);
     }
 };
 
