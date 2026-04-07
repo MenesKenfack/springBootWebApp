@@ -59,4 +59,40 @@ public interface LibraryResourceRepository extends JpaRepository<LibraryResource
     
     @Query("SELECT DISTINCT r.author FROM LibraryResource r WHERE r.author IS NOT NULL AND r.author <> '' ORDER BY r.author")
     List<String> findDistinctAuthors();
+    
+    // Landing page queries
+    
+    // Find resources by author (for related books)
+    List<LibraryResource> findByAuthorAndResourceIDNot(String author, Long excludeResourceId);
+    
+    // Find newly added resources with limit
+    @Query("SELECT r FROM LibraryResource r ORDER BY r.createdAt DESC")
+    List<LibraryResource> findNewlyAdded(@Param("limit") int limit);
+    
+    // Find trending resources (most rated with high average rating)
+    @Query("SELECT r, AVG(rat.rating) as avgRating, COUNT(rat) as ratingCount " +
+           "FROM LibraryResource r " +
+           "LEFT JOIN Rating rat ON rat.resource = r " +
+           "GROUP BY r " +
+           "HAVING COUNT(rat) > 0 " +
+           "ORDER BY avgRating DESC, ratingCount DESC")
+    List<Object[]> findTrendingResources(Pageable pageable);
+    
+    // Find popular resources (high rating count + high average rating)
+    @Query("SELECT r, AVG(rat.rating) as avgRating, COUNT(rat) as ratingCount " +
+           "FROM LibraryResource r " +
+           "LEFT JOIN Rating rat ON rat.resource = r " +
+           "GROUP BY r " +
+           "HAVING COUNT(rat) >= 5 AND AVG(rat.rating) >= 4.0 " +
+           "ORDER BY ratingCount DESC, avgRating DESC")
+    List<Object[]> findPopularResources(Pageable pageable);
+    
+    // Find resources with 5 star ratings
+    @Query("SELECT r, COUNT(rat) as fiveStarCount " +
+           "FROM LibraryResource r " +
+           "LEFT JOIN Rating rat ON rat.resource = r AND rat.rating = 5 " +
+           "GROUP BY r " +
+           "HAVING COUNT(rat) > 0 " +
+           "ORDER BY fiveStarCount DESC")
+    List<Object[]> findFiveStarResources(Pageable pageable);
 }

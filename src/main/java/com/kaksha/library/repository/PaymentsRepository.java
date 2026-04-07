@@ -57,4 +57,14 @@ public interface PaymentsRepository extends JpaRepository<Payments, Long> {
            "FROM Payments p WHERE p.status = 'PAID' AND p.client.userID = :clientId " +
            "GROUP BY p.resource.category")
     List<Object[]> getClientPurchasesByCategory(@Param("clientId") Long clientId);
+    
+    // Find best selling resources (most purchased)
+    @Query("SELECT p.resource.resourceID, COUNT(p) as salesCount " +
+           "FROM Payments p WHERE p.status = 'PAID' " +
+           "GROUP BY p.resource.resourceID " +
+           "ORDER BY salesCount DESC")
+    List<Object[]> findBestSellingResources(Pageable pageable);
+    
+    @Query("SELECT COUNT(p) FROM Payments p WHERE p.status = 'PAID' AND p.resource.resourceID = :resourceId")
+    long countSalesByResourceId(@Param("resourceId") Long resourceId);
 }

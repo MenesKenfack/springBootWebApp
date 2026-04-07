@@ -6,530 +6,8 @@
     <title>Kaksha - Digital Library Platform</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css">
     <link rel="stylesheet" th:href="@{/css/animations.css}" href="/css/animations.css">
+    <link rel="stylesheet" th:href="@{/css/landing.css}" href="/css/landing.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        .landing-page {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: #F8FAFC;
-            color: #1E2937;
-            line-height: 1.6;
-        }
-
-        /* Navigation */
-        .landing-nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.25rem 4rem;
-            max-width: 1400px;
-            margin: 0 auto;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(229, 231, 235, 0.5);
-        }
-
-        .landing-nav .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #2563EB;
-            text-decoration: none;
-        }
-
-        .landing-nav .logo i {
-            font-size: 1.75rem;
-        }
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 2.5rem;
-        }
-
-        .nav-links a {
-            color: #64748B;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.9375rem;
-            transition: color 0.2s;
-        }
-
-        .nav-links a:hover {
-            color: #2563EB;
-        }
-
-        .nav-cta {
-            display: flex;
-            gap: 1rem;
-        }
-
-        /* Mobile Menu Toggle */
-        .mobile-menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: #2563EB;
-            cursor: pointer;
-            padding: 0.5rem;
-        }
-
-        /* Mobile Navigation */
-        .mobile-nav {
-            display: none;
-            position: fixed;
-            top: 70px;
-            left: 0;
-            right: 0;
-            background: white;
-            padding: 1rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-            z-index: 999;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .mobile-nav.active {
-            display: flex;
-        }
-
-        .mobile-nav a {
-            color: #1E2937;
-            text-decoration: none;
-            font-weight: 500;
-            padding: 0.75rem;
-            border-radius: 0.5rem;
-            transition: background 0.2s;
-        }
-
-        .mobile-nav a:hover {
-            background: #F1F5F9;
-            color: #2563EB;
-        }
-
-        .btn-nav {
-            padding: 0.625rem 1.5rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            font-size: 0.875rem;
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-
-        .btn-nav-outline {
-            color: #2563EB;
-            border: 1.5px solid #2563EB;
-        }
-
-        .btn-nav-outline:hover {
-            background: #2563EB;
-            color: white;
-        }
-
-        .btn-nav-primary {
-            background: #2563EB;
-            color: white;
-            border: 1.5px solid #2563EB;
-        }
-
-        .btn-nav-primary:hover {
-            background: #1D4ED8;
-            border-color: #1D4ED8;
-        }
-
-        /* Hero Section */
-        .landing-hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            padding: 8rem 4rem 4rem;
-            max-width: 1400px;
-            margin: 0 auto;
-            gap: 4rem;
-        }
-
-        .hero-content {
-            flex: 1;
-            max-width: 600px;
-        }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            background: rgba(37, 99, 235, 0.1);
-            color: #2563EB;
-            border-radius: 2rem;
-            font-size: 0.875rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-        }
-
-        .hero-content h1 {
-            font-size: 3.5rem;
-            font-weight: 800;
-            line-height: 1.1;
-            margin-bottom: 1.5rem;
-            color: #1E2937;
-        }
-
-        .hero-content h1 span {
-            color: #F59E0B;
-        }
-
-        .hero-content p {
-            font-size: 1.125rem;
-            color: #64748B;
-            margin-bottom: 2rem;
-            line-height: 1.7;
-        }
-
-        .hero-stats {
-            display: flex;
-            gap: 3rem;
-            margin-bottom: 2.5rem;
-        }
-
-        .stat-item {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .stat-number {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: #2563EB;
-        }
-
-        .stat-label {
-            font-size: 0.875rem;
-            color: #64748B;
-        }
-
-        .hero-buttons {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .btn-hero {
-            padding: 1rem 2rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            font-size: 1rem;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.2s;
-        }
-
-        .btn-hero-primary {
-            background: #2563EB;
-            color: white;
-            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
-        }
-
-        .btn-hero-primary:hover {
-            background: #1D4ED8;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
-        }
-
-        .btn-hero-secondary {
-            background: white;
-            color: #1E2937;
-            border: 1.5px solid #E2E8F0;
-        }
-
-        .btn-hero-secondary:hover {
-            border-color: #2563EB;
-            color: #2563EB;
-        }
-
-        .hero-visual {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .hero-image {
-            width: 100%;
-            max-width: 500px;
-            aspect-ratio: 1;
-            background: linear-gradient(135deg, rgba(107, 33, 168, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
-            border-radius: 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero-image::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(107, 33, 168, 0.05) 0%, transparent 70%);
-            animation: rotate 30s linear infinite;
-        }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        .hero-image svg {
-            width: 90%;
-            height: 90%;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Features Section */
-        .features {
-            padding: 6rem 4rem;
-            background: #F1F5F9;
-        }
-
-        .features-container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .section-header {
-            text-align: center;
-            max-width: 600px;
-            margin: 0 auto 4rem;
-        }
-
-        .section-header h2 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #1E2937;
-            margin-bottom: 1rem;
-        }
-
-        .section-header p {
-            font-size: 1.125rem;
-            color: #64748B;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 2rem;
-        }
-
-        .feature-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 1rem;
-            border: 1px solid #E2E8F0;
-            transition: all 0.3s;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
-            border-color: rgba(37, 99, 235, 0.2);
-        }
-
-        .feature-icon {
-            width: 56px;
-            height: 56px;
-            background: rgba(37, 99, 235, 0.1);
-            border-radius: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1.25rem;
-        }
-
-        .feature-icon i {
-            font-size: 1.5rem;
-            color: #2563EB;
-        }
-
-        .feature-card h3 {
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: #1E2937;
-            margin-bottom: 0.75rem;
-        }
-
-        .feature-card p {
-            color: #64748B;
-            font-size: 0.9375rem;
-            line-height: 1.6;
-        }
-
-        /* CTA Section */
-        .cta-section {
-            padding: 6rem 4rem;
-            background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
-        }
-
-        .cta-container {
-            max-width: 800px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .cta-container h2 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: white;
-            margin-bottom: 1rem;
-        }
-
-        .cta-container p {
-            font-size: 1.125rem;
-            color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 2rem;
-        }
-
-        .btn-cta {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 1rem 2.5rem;
-            background: white;
-            color: #2563EB;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            font-size: 1rem;
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-
-        .btn-cta:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Footer */
-        .footer {
-            padding: 3rem 4rem;
-            background: #1E2937;
-            color: #94A3B8;
-        }
-
-        .footer-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .footer-brand {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: white;
-        }
-
-        .footer-brand i {
-            color: #F59E0B;
-        }
-
-        .footer-links {
-            display: flex;
-            gap: 2rem;
-        }
-
-        .footer-links a {
-            color: #9ca3af;
-            text-decoration: none;
-            font-size: 0.875rem;
-            transition: color 0.2s;
-        }
-
-        .footer-links a:hover {
-            color: white;
-        }
-
-        .footer-copyright {
-            font-size: 0.875rem;
-        }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .features-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .landing-nav {
-                padding: 1rem 1.5rem;
-            }
-
-            .nav-links {
-                display: none;
-            }
-
-            .mobile-menu-toggle {
-                display: block;
-            }
-
-            .landing-hero {
-                flex-direction: column;
-                padding: 6rem 1.5rem 3rem;
-                gap: 2rem;
-            }
-
-            .hero-content h1 {
-                font-size: 2.5rem;
-            }
-
-            .hero-stats {
-                gap: 2rem;
-            }
-
-            .features {
-                padding: 4rem 1.5rem;
-            }
-
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .section-header h2 {
-                font-size: 2rem;
-            }
-
-            .cta-container h2 {
-                font-size: 2rem;
-            }
-
-            .footer-container {
-                flex-direction: column;
-                gap: 1.5rem;
-                text-align: center;
-            }
-        }
-    </style>
 </head>
 <body class="landing-page">
     <nav class="landing-nav">
@@ -539,8 +17,7 @@
         </a>
         <div class="nav-links">
             <a href="#features">Features</a>
-            <a th:href="@{/resources}" href="/resources">Resources</a>
-            <a th:href="@{/login}" href="/login">Sign In</a>
+            <a href="/resources">Resources</a>
             <div class="nav-cta">
                 <a th:href="@{/login}" href="/login" class="btn-nav btn-nav-outline">Login</a>
                 <a th:href="@{/register}" href="/register" class="btn-nav btn-nav-primary">Get Started</a>
@@ -554,7 +31,7 @@
     <!-- Mobile Navigation -->
     <div class="mobile-nav" id="mobileNav">
         <a href="#features">Features</a>
-        <a th:href="@{/resources}" href="/resources">Resources</a>
+        <a href="#resources">Resources</a>
         <a th:href="@{/login}" href="/login">Login</a>
         <a th:href="@{/register}" href="/register" style="color: #2563EB; font-weight: 600;">Get Started</a>
     </div>
@@ -579,9 +56,9 @@
             </div>
             <div class="hero-buttons">
                 <a th:href="@{/register}" href="/register" class="btn-hero btn-hero-primary btn-ripple">
-                    <i class="fas fa-user-plus"></i> Get Started Free
+                    <i class="fas fa-user-plus"></i> Get Started
                 </a>
-                <a th:href="@{/resources}" href="/resources" class="btn-hero btn-hero-secondary btn-ripple">
+                <a href="/resources" class="btn-hero btn-hero-secondary btn-ripple">
                     <i class="fas fa-compass"></i> Explore Resources
                 </a>
             </div>
@@ -772,6 +249,226 @@
         </div>
     </section>
 
+    <section class="resources-section" id="resources">
+        <div class="resources-container">
+            <!-- Trending Now Section -->
+            <div class="resource-category">
+                <div class="category-header">
+                    <h2 class="category-title">Trending Now</h2>
+                    <a href="/resources" class="view-all-link">
+                        View all
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </a>
+                </div>
+                <div class="books-row-wrapper">
+                    <div class="books-scroll-container">
+                        <div class="books-row">
+                            <!-- Dynamic Trending Resources -->
+                            <div class="book-card" th:each="resource : ${trendingResources}" th:href="@{/resource/{id}(id=${resource.resourceID})}">
+                                <div class="book-cover-wrapper">
+                                    <img th:src="${resource.resourceImage != null ? resource.resourceImage : 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=300&h=450&fit=crop'}" 
+                                         th:alt="${resource.title}" class="book-cover">
+                                </div>
+                                <div class="book-info">
+                                    <h3 class="book-title" th:text="${resource.title}">Book Title</h3>
+                                    <p class="book-author" th:text="${resource.author}">Author</p>
+                                    <div class="book-price-rating">
+                                        <span class="book-price" th:text="'XAF' + ${resource.price}">XAF0</span>
+                                        <div class="book-rating">
+                                            <span class="star" th:each="i : ${#numbers.sequence(1, 5)}" 
+                                                  th:style="${i <= resource.averageRating} ? '' : 'color: #d1d5db;'">★</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Fallback message if no resources -->
+                            <div th:if="${#lists.isEmpty(trendingResources)}" class="book-card">
+                                <div class="book-info">
+                                    <h3 class="book-title">No trending books yet</h3>
+                                    <p class="book-author">Check back soon!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="promo-card">
+                        <div class="promo-icon">
+                            <i class="fas fa-fire"></i>
+                        </div>
+                        <h3 class="promo-title">Trending Picks</h3>
+                        <p class="promo-text">Discover what everyone's reading this week</p>
+                        <a href="/resources" class="promo-btn">
+                            Explore <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bestselling Books Section -->
+            <div class="resource-category">
+                <div class="category-header">
+                    <h2 class="category-title">Best selling Books</h2>
+                    <a href="/resources" class="view-all-link">
+                        View all
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </a>
+                </div>
+                <div class="books-row-wrapper">
+                    <div class="books-scroll-container">
+                        <div class="books-row">
+                            <!-- Dynamic Best Selling Resources -->
+                            <div class="book-card" th:each="resource : ${bestSellingResources}" th:href="@{/resource/{id}(id=${resource.resourceID})}">
+                                <div class="book-cover-wrapper">
+                                    <img th:src="${resource.resourceImage != null ? resource.resourceImage : 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=300&h=450&fit=crop'}" 
+                                         th:alt="${resource.title}" class="book-cover">
+                                </div>
+                                <div class="book-info">
+                                    <h3 class="book-title" th:text="${resource.title}">Book Title</h3>
+                                    <p class="book-author" th:text="${resource.author}">Author</p>
+                                    <div class="book-price-rating">
+                                        <span class="book-price" th:text="'XAF' + ${resource.price}">XAF0</span>
+                                        <div class="book-rating">
+                                            <span class="star" th:each="i : ${#numbers.sequence(1, 5)}" 
+                                                th:style="${i <= resource.averageRating} ? '' : 'color: #d1d5db;'">★</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Fallback message if no resources -->
+                            <div th:if="${#lists.isEmpty(bestSellingResources)}" class="book-card">
+                                <div class="book-info">
+                                    <h3 class="book-title">No bestsellers yet</h3>
+                                    <p class="book-author">Be the first to purchase!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="promo-card summer">
+                        <div class="promo-icon">
+                            <i class="fas fa-crown"></i>
+                        </div>
+                        <h3 class="promo-title">Top Sellers</h3>
+                        <p class="promo-text">The most popular books loved by readers</p>
+                        <a href="/resources" class="promo-btn">
+                            Browse <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Popular Books Section -->
+            <div class="resource-category">
+                <div class="category-header">
+                    <h2 class="category-title">Popular Books</h2>
+                    <a href="/resources" class="view-all-link">
+                        View all
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </a>
+                </div>
+                <div class="books-row-wrapper">
+                    <div class="books-scroll-container">
+                        <div class="books-row">
+                            <!-- Dynamic Popular Resources -->
+                            <div class="book-card" th:each="resource : ${popularResources}" th:href="@{/resource/{id}(id=${resource.resourceID})}">
+                                <div class="book-cover-wrapper">
+                                    <img th:src="${resource.resourceImage != null ? resource.resourceImage : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=450&fit=crop'}" 
+                                        th:alt="${resource.title}" class="book-cover">
+                                </div>
+                                <div class="book-info">
+                                    <h3 class="book-title" th:text="${resource.title}">Book Title</h3>
+                                    <p class="book-author" th:text="${resource.author}">Author</p>
+                                    <div class="book-price-rating">
+                                        <span class="book-price" th:text="'XAF' + ${resource.price}">XAF0</span>
+                                        <div class="book-rating">
+                                            <span class="star" th:each="i : ${#numbers.sequence(1, 5)}"
+                                                th:style="${i <= resource.averageRating} ? '' : 'color: #d1d5db;'">★</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Fallback message if no resources -->
+                            <div th:if="${#lists.isEmpty(popularResources)}" class="book-card">
+                                <div class="book-info">
+                                    <h3 class="book-title">No popular books yet</h3>
+                                    <p class="book-author">Start rating books!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="promo-card study">
+                        <div class="promo-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <h3 class="promo-title">Reader Favorites</h3>
+                        <p class="promo-text">Books that have captured hearts worldwide</p>
+                        <a href="/resources" class="promo-btn">
+                            Discover <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Newly Added Section -->
+            <div class="resource-category">
+                <div class="category-header">
+                    <h2 class="category-title">Newly Added</h2>
+                    <a href="/resources" class="view-all-link">
+                        View all
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </a>
+                </div>
+                <div class="books-row-wrapper">
+                    <div class="books-scroll-container">
+                        <div class="books-row">
+                            <!-- Dynamic Newly Added Resources -->
+                            <div class="book-card" th:each="resource : ${newlyAddedResources}" th:href="@{/resource/{id}(id=${resource.resourceID})}">
+                                <div class="book-cover-wrapper">
+                                    <img th:src="${resource.resourceImage != null ? resource.resourceImage : 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=300&h=450&fit=crop'}" 
+                                         th:alt="${resource.title}" class="book-cover">
+                                </div>
+                                <div class="book-info">
+                                    <h3 class="book-title" th:text="${resource.title}">Book Title</h3>
+                                    <p class="book-author" th:text="${resource.author}">Author</p>
+                                    <div class="book-price-rating">
+                                        <span class="book-price" th:text="'XAF' + ${resource.price}">XAF0</span>
+                                        <div class="book-rating">
+                                            <span class="star" th:each="i : ${#numbers.sequence(1, 5)}" 
+                                                  th:style="${i <= resource.averageRating} ? '' : 'color: #d1d5db;'">★</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Fallback message if no resources -->
+                            <div th:if="${#lists.isEmpty(newlyAddedResources)}" class="book-card">
+                                <div class="book-info">
+                                    <h3 class="book-title">No new books yet</h3>
+                                    <p class="book-author">Stay tuned for updates!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="promo-card new">
+                        <div class="promo-icon">
+                            <i class="fas fa-sparkles"></i>
+                        </div>
+                        <h3 class="promo-title">Fresh Arrivals</h3>
+                        <p class="promo-text">New books added to our collection</p>
+                        <a href="/resources" class="promo-btn">
+                            See All New <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section class="features" id="features">
         <div class="features-container">
             <div class="section-header animate-on-scroll animate-fade-up">
@@ -829,7 +526,7 @@
             </div>
             <div class="footer-links">
                 <a href="#features">Features</a>
-                <a th:href="@{/resources}" href="/resources">Resources</a>
+                <a th:href="#" href="/resources">Resources</a>
                 <a th:href="@{/login}" href="/login">Sign In</a>
                 <a th:href="@{/register}" href="/register">Get Started</a>
             </div>

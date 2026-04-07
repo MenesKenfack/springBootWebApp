@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${resource.title} + ' - Kaksha'">Book Details - Kaksha</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css">
+    <link rel="stylesheet" th:href="@{/css/animations.css}" href="/css/animations.css">
+    <link rel="stylesheet" th:href="@{/css/landing.css}" href="/css/landing.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="landing-page">
+    <nav class="landing-nav">
+        <a th:href="@{/}" href="/" class="logo">
+            <i class="fas fa-book-open"></i>
+            <span>Kaksha</span>
+        </a>
+        <div class="nav-links">
+            <a th:href="@{/}" href="/">Home</a>
+            <a th:href="@{/resources}" href="/resources">Resources</a>
+            <div class="nav-cta">
+                <a th:href="@{/login}" href="/login" class="btn-nav btn-nav-outline">Login</a>
+                <a th:href="@{/register}" href="/register" class="btn-nav btn-nav-primary">Get Started</a>
+            </div>
+        </div>
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+            <i class="fas fa-bars"></i>
+        </button>
+    </nav>
+
+    <div class="mobile-nav" id="mobileNav">
+        <a th:href="@{/}" href="/">Home</a>
+        <a th:href="@{/resources}" href="/resources">Resources</a>
+        <a th:href="@{/login}" href="/login">Login</a>
+        <a th:href="@{/register}" href="/register" style="color: #2563EB; font-weight: 600;">Get Started</a>
+    </div>
+
+    <section class="resource-detail-section" style="padding: 8rem 4rem 4rem; max-width: 1400px; margin: 0 auto;">
+        <div style="display: grid; grid-template-columns: 300px 1fr; gap: 3rem; margin-bottom: 4rem;">
+            <!-- Book Cover -->
+            <div class="book-cover-wrapper" style="aspect-ratio: 2/3; border-radius: 1rem; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.15);">
+                <img th:src="${resource.resourceImage != null ? resource.resourceImage : 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=600&fit=crop'}" 
+                    th:alt="${resource.title}"
+                    class="book-cover" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            
+            <!-- Book Info -->
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div>
+                    <span style="display: inline-block; padding: 0.375rem 0.875rem; background: rgba(37, 99, 235, 0.1); color: #2563EB; border-radius: 2rem; font-size: 0.875rem; font-weight: 600; margin-bottom: 1rem;" 
+                        th:text="${resource.category}">Category</span>
+                    <h1 style="font-size: 2.5rem; font-weight: 700; color: #1E2937; margin-bottom: 0.5rem;" th:text="${resource.title}">Book Title</h1>
+                    <p style="font-size: 1.25rem; color: #64748B;" th:text="'by ' + ${resource.author}">by Author</p>
+                </div>
+                
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div class="book-rating" style="display: flex; gap: 0.25rem;">
+                        <span class="star" th:each="i : ${#numbers.sequence(1, 5)}" 
+                            th:style="${i <= resource.averageRating} ? 'color: #fbbf24; font-size: 1.25rem;' : 'color: #d1d5db; font-size: 1.25rem;'">★</span>
+                    </div>
+                    <span style="color: #64748B; font-size: 0.9375rem;" 
+                        th:text="${resource.averageRating} + ' (' + ${resource.totalRatings} + ' ratings)'">4.5 (120 ratings)</span>
+                </div>
+                
+                <div style="display: flex; gap: 2rem; padding: 1rem 0; border-top: 1px solid #E2E8F0; border-bottom: 1px solid #E2E8F0;">
+                    <div>
+                        <span style="display: block; font-size: 0.875rem; color: #64748B;">Price</span>
+                        <span style="font-size: 1.5rem; font-weight: 700; color: #1E2937;" th:text="'XAF' + ${resource.price}">XAF0</span>
+                    </div>
+                    <div>
+                        <span style="display: block; font-size: 0.875rem; color: #64748B;">Sold</span>
+                        <span style="font-size: 1.5rem; font-weight: 700; color: #1E2937;" th:text="${resource.totalSales}">0</span>
+                    </div>
+                    <div>
+                        <span style="display: block; font-size: 0.875rem; color: #64748B;">Accessed</span>
+                        <span style="font-size: 1.5rem; font-weight: 700; color: #1E2937;" th:text="${resource.totalAccesses}">0</span>
+                    </div>
+                    <div th:if="${resource.publicationYear != null}">
+                        <span style="display: block; font-size: 0.875rem; color: #64748B;">Year</span>
+                        <span style="font-size: 1.5rem; font-weight: 700; color: #1E2937;" th:text="${resource.publicationYear}">2024</span>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 style="font-size: 1.125rem; font-weight: 600; color: #1E2937; margin-bottom: 0.75rem;">Description</h3>
+                    <p style="color: #64748B; line-height: 1.7;" th:text="${resource.description != null ? resource.description : 'No description available.'}">
+                        Book description goes here.
+                    </p>
+                </div>
+                
+                <div style="display: flex; gap: 1rem; margin-top: auto;">
+                    <a th:href="@{/resources}" class="btn-hero btn-hero-primary" style="text-decoration: none;">
+                        <i class="fas fa-shopping-cart"></i> Purchase
+                    </a>
+                    <a th:href="@{/resources}" class="btn-hero btn-hero-secondary" style="text-decoration: none;">
+                        <i class="fas fa-book-open"></i> Preview
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Related Books by Author -->
+        <div th:if="${!#lists.isEmpty(relatedBooks)}" style="margin-top: 4rem;">
+            <div class="category-header" style="margin-bottom: 1.5rem;">
+                <h2 class="category-title" th:text="'More by ' + ${resource.author}">More by Author</h2>
+                <a th:href="@{/resources}" class="view-all-link">
+                    View all
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+            </div>
+            
+            <div class="books-scroll-container">
+                <div class="books-row">
+                    <div class="book-card" th:each="related : ${relatedBooks}" th:href="@{/resource/{id}(id=${related.resourceID})}">
+                        <div class="book-cover-wrapper">
+                            <img th:src="${related.resourceImage != null ? related.resourceImage : 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=300&h=450&fit=crop'}" 
+                                 th:alt="${related.title}" class="book-cover">
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title" th:text="${related.title}">Book Title</h3>
+                            <p class="book-author" th:text="${related.author}">Author</p>
+                            <div class="book-price-rating">
+                                <span class="book-price" th:text="'XAF' + ${related.price}">XAF0</span>
+                                <div class="book-rating">
+                                    <span class="star" th:each="i : ${#numbers.sequence(1, 5)}" 
+                                          th:style="${i <= related.averageRating} ? '' : 'color: #d1d5db;'">★</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <i class="fas fa-book-open"></i>
+                <span>Kaksha</span>
+            </div>
+            <div class="footer-links">
+                <a th:href="@{/}" href="/">Home</a>
+                <a th:href="@{/resources}" href="/resources">Resources</a>
+                <a th:href="@{/login}" href="/login">Sign In</a>
+                <a th:href="@{/register}" href="/register">Get Started</a>
+            </div>
+            <div class="footer-copyright">
+                &copy; 2026 Kaksha Digital Library. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const mobileNav = document.getElementById('mobileNav');
+        
+        if (mobileMenuToggle && mobileNav) {
+            mobileMenuToggle.addEventListener('click', () => {
+                mobileNav.classList.toggle('active');
+                const icon = mobileMenuToggle.querySelector('i');
+                if (mobileNav.classList.contains('active')) {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-times');
+                } else {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

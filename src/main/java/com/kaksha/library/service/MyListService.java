@@ -1,7 +1,14 @@
 package com.kaksha.library.service;
 
-import com.kaksha.library.dto.*;
-import com.kaksha.library.model.entity.*;
+import com.kaksha.library.dto.FavoriteResponse;
+import com.kaksha.library.dto.MyListResponse;
+import com.kaksha.library.dto.RatingResponse;
+import com.kaksha.library.dto.ReadingProgressResponse;
+import com.kaksha.library.model.entity.Client;
+import com.kaksha.library.model.entity.Favorite;
+import com.kaksha.library.model.entity.LibraryResource;
+import com.kaksha.library.model.entity.Rating;
+import com.kaksha.library.model.entity.ReadingProgress;
 import com.kaksha.library.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
