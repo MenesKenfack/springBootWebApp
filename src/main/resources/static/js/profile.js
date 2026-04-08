@@ -21,41 +21,52 @@ document.addEventListener('DOMContentLoaded', () => {
 async function loadProfile() {
     try {
         const response = await authAPI.getCurrentUser();
-        
+
         if (response.success && response.user) {
             const user = response.user;
-            
-            // Fill form fields
-            document.getElementById('profileFirstName').value = user.firstName || '';
-            document.getElementById('profileLastName').value = user.lastName || '';
-            document.getElementById('profileUsername').value = user.username || '';
-            document.getElementById('profileEmail').value = user.email || '';
-            document.getElementById('profileDob').value = user.dateOfBirth || '';
-            document.getElementById('profileRole').value = user.role?.replace('ROLE_', '') || '';
-            
+
+            // Fill form fields with null checks
+            const firstNameEl = document.getElementById('profileFirstName');
+            const lastNameEl = document.getElementById('profileLastName');
+            const usernameEl = document.getElementById('profileUsername');
+            const emailEl = document.getElementById('profileEmail');
+            const dobEl = document.getElementById('profileDob');
+            const roleEl = document.getElementById('profileRole');
+
+            if (firstNameEl) firstNameEl.value = user.firstName || '';
+            if (lastNameEl) lastNameEl.value = user.lastName || '';
+            if (usernameEl) usernameEl.value = user.username || '';
+            if (emailEl) emailEl.value = user.email || '';
+            if (dobEl) dobEl.value = user.dateOfBirth || '';
+            if (roleEl) roleEl.value = user.role?.replace('ROLE_', '') || '';
+
             // Update badge
             const tierBadge = document.getElementById('userTierBadge');
             if (tierBadge) {
                 tierBadge.textContent = user.tier || 'BASIC';
                 tierBadge.className = 'tier-badge ' + (user.tier === 'PREMIUM' ? 'premium' : '');
             }
-            
+
             // Update subscription section
             const currentPlan = document.getElementById('currentPlan');
             const upgradeBtn = document.getElementById('upgradeBtn');
             const upgradeText = document.getElementById('upgradeText');
-            
+
             if (currentPlan) {
                 currentPlan.textContent = user.tier || 'Basic';
             }
-            
+
             if (user.tier === 'PREMIUM') {
                 if (upgradeBtn) upgradeBtn.style.display = 'none';
                 if (upgradeText) upgradeText.textContent = 'You have full access to all resources.';
             }
+        } else {
+            console.error('Profile response missing user data:', response);
+            Toast.error('Failed to load profile data');
         }
     } catch (error) {
-        Toast.error('Failed to load profile');
+        console.error('Error loading profile:', error);
+        Toast.error('Failed to load profile: ' + (error.message || 'Unknown error'));
     }
 }
 

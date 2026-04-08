@@ -73,6 +73,11 @@ public class SecurityConfig {
                     UserRole.ROLE_MANAGER.name()
                 )
                 .requestMatchers("/api/purchase/**").hasAuthority(UserRole.ROLE_CLIENT.name())
+                .requestMatchers("/api/reports/dashboard-stats").hasAnyAuthority(
+                    UserRole.ROLE_MANAGER.name(),
+                    UserRole.ROLE_LIBRARIAN.name(),
+                    UserRole.ROLE_CLIENT.name()
+                )
                 .requestMatchers("/api/admin/**", "/api/reports/**", "/api/backups/**").hasAuthority(UserRole.ROLE_MANAGER.name())
                 .requestMatchers(HttpMethod.POST, "/api/resources").hasAnyAuthority(
                     UserRole.ROLE_LIBRARIAN.name(), 

@@ -206,8 +206,11 @@ async function loadClientDashboardData() {
     try {
         // Load stats from API and client data in parallel
         const [statsResponse, recentResources, recentPurchases, myListResponse] = await Promise.all([
-            apiClient.get('/reports/dashboard-stats'),
-            resourcesAPI.getRecent(),
+            apiClient.get('/reports/dashboard-stats').catch(error => {
+                console.error('Failed to load stats:', error);
+                return { success: false, data: null };
+            }),
+            resourcesAPI.getRecent().catch(() => ({ data: [] })),
             purchaseAPI.getRecent().catch(() => ({ data: [] })),
             myListAPI.getMyList().catch(() => ({ data: [] }))
         ]);
@@ -243,7 +246,10 @@ async function loadLibrarianDashboardData() {
     try {
         // Load librarian stats and data in parallel
         const [statsResponse, catalogsResponse, recentResources] = await Promise.all([
-            apiClient.get('/reports/dashboard-stats'),
+            apiClient.get('/reports/dashboard-stats').catch(error => {
+                console.error('Failed to load stats:', error);
+                return { success: false, data: null };
+            }),
             resourcesAPI.getCatalogs().catch(() => ({ data: [] })),
             resourcesAPI.getRecent().catch(() => ({ data: [] }))
         ]);

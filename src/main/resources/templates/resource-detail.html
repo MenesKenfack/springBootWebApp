@@ -36,6 +36,13 @@
     </div>
 
     <section class="resource-detail-section" style="padding: 8rem 4rem 4rem; max-width: 1400px; margin: 0 auto;">
+        <!-- Back to Home Button -->
+        <div style="margin-bottom: 1.5rem;">
+            <a th:href="@{/}" href="/" style="display: inline-flex; align-items: center; gap: 0.5rem; color: #64748B; text-decoration: none; font-size: 0.875rem; font-weight: 500; transition: color 0.2s ease;">
+                <i class="fas fa-arrow-left" style="font-size: 1rem;"></i>
+                <span>Back to Home</span>
+            </a>
+        </div>
         <div style="display: grid; grid-template-columns: 300px 1fr; gap: 3rem; margin-bottom: 4rem;">
             <!-- Book Cover -->
             <div class="book-cover-wrapper" style="aspect-ratio: 2/3; border-radius: 1rem; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.15);">
