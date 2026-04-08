@@ -43,6 +43,21 @@
                 <span>Back to Home</span>
             </a>
         </div>
+
+        <!-- Resource Search Bar -->
+        <div style="margin-bottom: 2rem;">
+            <form th:action="@{/resources}" method="get" id="resourceSearchForm" style="display: flex; gap: 0.75rem; max-width: 600px;">
+                <div style="flex: 1; position: relative;">
+                    <i class="fas fa-search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #64748B; font-size: 1rem;"></i>
+                    <input type="text" name="search" id="resourceSearchInput" placeholder="Search digital resources by title, author, or ISBN..." required
+                           style="width: 100%; padding: 0.875rem 1rem 0.875rem 2.75rem; border: 1px solid #E2E8F0; border-radius: 0.75rem; font-size: 0.9375rem; color: #1E2937; background: white; transition: all 0.2s ease; outline: none;">
+                </div>
+                <button type="submit" class="btn-hero btn-hero-primary" style="padding: 0.875rem 1.5rem; white-space: nowrap;">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </form>
+        </div>
+
         <div style="display: grid; grid-template-columns: 300px 1fr; gap: 3rem; margin-bottom: 4rem;">
             <!-- Book Cover -->
             <div class="book-cover-wrapper" style="aspect-ratio: 2/3; border-radius: 1rem; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.15);">
@@ -132,7 +147,7 @@
                                 <span class="book-price" th:text="'XAF' + ${related.price}">XAF0</span>
                                 <div class="book-rating">
                                     <span class="star" th:each="i : ${#numbers.sequence(1, 5)}" 
-                                          th:style="${i <= related.averageRating} ? '' : 'color: #d1d5db;'">★</span>
+                                        th:style="${i <= related.averageRating} ? '' : 'color: #d1d5db;'">★</span>
                                 </div>
                             </div>
                         </div>
@@ -150,7 +165,7 @@
             </div>
             <div class="footer-links">
                 <a th:href="@{/}" href="/">Home</a>
-                <a th:href="@{/resources}" href="/resources">Resources</a>
+                <a href="#resources">Resources</a>
                 <a th:href="@{/login}" href="/login">Sign In</a>
                 <a th:href="@{/register}" href="/register">Get Started</a>
             </div>
@@ -164,7 +179,7 @@
         // Mobile menu toggle
         const mobileMenuToggle = document.getElementById('mobileMenuToggle');
         const mobileNav = document.getElementById('mobileNav');
-        
+
         if (mobileMenuToggle && mobileNav) {
             mobileMenuToggle.addEventListener('click', () => {
                 mobileNav.classList.toggle('active');
@@ -175,6 +190,31 @@
                 } else {
                     icon.classList.remove('fa-times');
                     icon.classList.add('fa-bars');
+                }
+            });
+        }
+
+        // Search functionality
+        const searchInput = document.getElementById('resourceSearchInput');
+        const searchForm = document.getElementById('resourceSearchForm');
+
+        if (searchInput) {
+            // Add focus effect styles via event listeners
+            searchInput.addEventListener('focus', function() {
+                this.style.borderColor = '#2563EB';
+                this.style.boxShadow = '0 0 0 3px rgba(37, 99, 235, 0.1)';
+            });
+
+            searchInput.addEventListener('blur', function() {
+                this.style.borderColor = '#E2E8F0';
+                this.style.boxShadow = 'none';
+            });
+
+            // Allow Enter key to submit form
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    searchForm.submit();
                 }
             });
         }

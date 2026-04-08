@@ -277,7 +277,7 @@
                                     <div class="book-price-rating">
                                         <span class="book-price" th:text="'XAF' + ${resource.price}">XAF0</span>
                                         <div class="book-rating">
-                                            <span class="star" th:each="i : ${#numbers.sequence(1, 5)}" 
+                                            <span class="star" th:each="i : ${#numbers.sequence(1, 5)}"
                                                 th:style="${i <= resource.averageRating} ? '' : 'color: #d1d5db;'">★</span>
                                         </div>
                                     </div>
@@ -526,7 +526,7 @@
             </div>
             <div class="footer-links">
                 <a href="#features">Features</a>
-                <a th:href="#" href="#resources">Resources</a>
+                <a href="#resources">Resources</a>
                 <a th:href="@{/login}" href="/login">Sign In</a>
                 <a th:href="@{/register}" href="/register">Get Started</a>
             </div>
