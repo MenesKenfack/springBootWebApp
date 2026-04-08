@@ -6,6 +6,9 @@ import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
@@ -14,8 +17,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {
+        // Resolve to absolute path to ensure consistency across app restarts
+        Path absoluteUploadPath = Paths.get(uploadDir).toAbsolutePath().normalize();
+
         // Serve uploaded files
         registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:" + uploadDir + "/");
+                .addResourceLocations("file:" + absoluteUploadPath + "/");
     }
 }

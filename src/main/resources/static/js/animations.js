@@ -80,7 +80,14 @@
         observe() {
             // Observe elements with animate-on-scroll class
             this.elements = document.querySelectorAll('.animate-on-scroll, .stagger-children');
-            this.elements.forEach(el => this.observer.observe(el));
+            this.elements.forEach(el => {
+                this.observer.observe(el);
+                // Immediate check for elements already in viewport
+                const rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight && rect.bottom > 0) {
+                    this.animateElement(el);
+                }
+            });
         }
         
         refresh() {
@@ -666,6 +673,9 @@
             }
             
             console.log('🎬 Kaksha Animation System initialized');
+
+            // Dispatch ready event to clear failsafe
+            document.dispatchEvent(new CustomEvent('KakshaAnimationsReady'));
         },
         
         refresh() {
@@ -685,13 +695,31 @@
     // ================================================
     // DOM READY INITIALIZATION
     // ================================================
-    
+
+    // Add js-enabled class to enable progressive enhancement
+    document.body.classList.add('js-enabled');
+
+    // Failsafe: ensure all animated elements become visible after 3 seconds
+    // even if IntersectionObserver doesn't trigger properly
+    const visibilityFailsafe = setTimeout(() => {
+        document.querySelectorAll('.animate-on-scroll, .stagger-children').forEach(el => {
+            if (!el.classList.contains('is-visible')) {
+                el.classList.add('is-visible');
+            }
+        });
+    }, 3000);
+
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => AnimationSystem.init());
     } else {
         AnimationSystem.init();
     }
-    
+
+    // Clear failsafe once animations are properly initialized
+    document.addEventListener('KakshaAnimationsReady', () => {
+        clearTimeout(visibilityFailsafe);
+    });
+
     // Expose to global scope
     window.KakshaAnimations = AnimationSystem;
     

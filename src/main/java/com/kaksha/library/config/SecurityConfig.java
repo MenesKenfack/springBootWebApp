@@ -53,6 +53,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/purchase/campay/callback/**").permitAll()
                 // Public pages (Thymeleaf templates)
                 .requestMatchers("/", "/index", "/login", "/register").permitAll()
+                .requestMatchers("/resource/**").permitAll()
                 .requestMatchers("/dashboard", "/resources", "/purchases", "/profile", "/my-list").permitAll()
                 .requestMatchers("/analytics", "/users", "/manage-resources", "/catalogs", "/terms", "/backup").permitAll()
                 // Static resources
