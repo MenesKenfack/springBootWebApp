@@ -250,6 +250,19 @@
     </section>
 
     <section class="resources-section" id="resources">
+        <!-- Resource Search Bar -->
+        <div style="margin-bottom: 2rem;">
+            <form th:action="@{/resources}" method="get" id="resourceSearchForm" style="display: flex; gap: 0.75rem; max-width: 600px;">
+                <div style="flex: 1; position: relative;">
+                    <i class="fas fa-search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #64748B; font-size: 1rem;"></i>
+                    <input type="text" name="search" id="resourceSearchInput" placeholder="Search digital resources by title, author, or ISBN..." required
+                        style="width: 100%; padding: 0.875rem 1rem 0.875rem 2.75rem; border: 1px solid #E2E8F0; border-radius: 0.75rem; font-size: 0.9375rem; color: #1E2937; background: white; transition: all 0.2s ease; outline: none;">
+                </div>
+                <button type="submit" class="btn-hero btn-hero-primary" style="padding: 0.875rem 1.5rem; white-space: nowrap;">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </form>
+        </div>
         <div class="resources-container">
             <!-- Trending Now Section -->
             <div class="resource-category">
