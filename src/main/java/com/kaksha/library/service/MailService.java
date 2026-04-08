@@ -1,34 +1,51 @@
 package com.kaksha.library.service;
 
+import sendinblue.ApiClient;
+import sibApi.TransactionalEmailsApi;
+import sibModel.SendSmtpEmail;
+import sibModel.SendSmtpEmailSender;
+import sibModel.SendSmtpEmailTo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class MailService {
     
-    private final JavaMailSender mailSender;
+    private final ApiClient brevoApiClient;
     
-    @Value("${spring.mail.username:noreply@kaksha.com}")
-    private String fromEmail;
+    @Value("${brevo.sender.email:noreply@kaksha.com}")
+    private String senderEmail;
+    
+    @Value("${brevo.sender.name:Kaksha Digital Library}")
+    private String senderName;
     
     @Value("${app.name:Kaksha Digital Library}")
     private String appName;
     
     public void sendVerificationEmail(String toEmail, String verificationCode) {
         try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(fromEmail);
-            message.setTo(toEmail);
-            message.setSubject("Verify Your Email - " + appName);
-            message.setText(buildVerificationEmailBody(verificationCode));
+            TransactionalEmailsApi api = new TransactionalEmailsApi(brevoApiClient);
             
-            mailSender.send(message);
+            SendSmtpEmailSender sender = new SendSmtpEmailSender();
+            sender.setEmail(senderEmail);
+            sender.setName(senderName);
+            
+            SendSmtpEmailTo recipient = new SendSmtpEmailTo();
+            recipient.setEmail(toEmail);
+            
+            SendSmtpEmail email = new SendSmtpEmail();
+            email.setSender(sender);
+            email.setTo(List.of(recipient));
+            email.setSubject("Verify Your Email - " + appName);
+            email.setTextContent(buildVerificationEmailBody(verificationCode));
+            
+            api.sendTransacEmail(email);
             log.info("Verification email sent to: {}", toEmail);
         } catch (Exception e) {
             log.error("Failed to send verification email to: {}", toEmail, e);
@@ -38,13 +55,22 @@ public class MailService {
     
     public void sendPasswordResetEmail(String toEmail, String resetToken) {
         try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(fromEmail);
-            message.setTo(toEmail);
-            message.setSubject("Password Reset - " + appName);
-            message.setText(buildPasswordResetEmailBody(resetToken));
+            TransactionalEmailsApi api = new TransactionalEmailsApi(brevoApiClient);
             
-            mailSender.send(message);
+            SendSmtpEmailSender sender = new SendSmtpEmailSender();
+            sender.setEmail(senderEmail);
+            sender.setName(senderName);
+            
+            SendSmtpEmailTo recipient = new SendSmtpEmailTo();
+            recipient.setEmail(toEmail);
+            
+            SendSmtpEmail email = new SendSmtpEmail();
+            email.setSender(sender);
+            email.setTo(List.of(recipient));
+            email.setSubject("Password Reset - " + appName);
+            email.setTextContent(buildPasswordResetEmailBody(resetToken));
+            
+            api.sendTransacEmail(email);
             log.info("Password reset email sent to: {}", toEmail);
         } catch (Exception e) {
             log.error("Failed to send password reset email to: {}", toEmail, e);
@@ -54,13 +80,22 @@ public class MailService {
     
     public void sendPaymentConfirmationEmail(String toEmail, String resourceTitle, String amount) {
         try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(fromEmail);
-            message.setTo(toEmail);
-            message.setSubject("Payment Confirmation - " + appName);
-            message.setText(buildPaymentConfirmationEmailBody(resourceTitle, amount));
+            TransactionalEmailsApi api = new TransactionalEmailsApi(brevoApiClient);
             
-            mailSender.send(message);
+            SendSmtpEmailSender sender = new SendSmtpEmailSender();
+            sender.setEmail(senderEmail);
+            sender.setName(senderName);
+            
+            SendSmtpEmailTo recipient = new SendSmtpEmailTo();
+            recipient.setEmail(toEmail);
+            
+            SendSmtpEmail email = new SendSmtpEmail();
+            email.setSender(sender);
+            email.setTo(List.of(recipient));
+            email.setSubject("Payment Confirmation - " + appName);
+            email.setTextContent(buildPaymentConfirmationEmailBody(resourceTitle, amount));
+            
+            api.sendTransacEmail(email);
             log.info("Payment confirmation email sent to: {}", toEmail);
         } catch (Exception e) {
             log.error("Failed to send payment confirmation email to: {}", toEmail, e);
@@ -69,13 +104,22 @@ public class MailService {
     
     public void sendLibrarianCredentialsEmail(String toEmail, String password, String firstName) {
         try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(fromEmail);
-            message.setTo(toEmail);
-            message.setSubject("Your Librarian Account - " + appName);
-            message.setText(buildLibrarianCredentialsEmailBody(toEmail, password, firstName));
+            TransactionalEmailsApi api = new TransactionalEmailsApi(brevoApiClient);
             
-            mailSender.send(message);
+            SendSmtpEmailSender sender = new SendSmtpEmailSender();
+            sender.setEmail(senderEmail);
+            sender.setName(senderName);
+            
+            SendSmtpEmailTo recipient = new SendSmtpEmailTo();
+            recipient.setEmail(toEmail);
+            
+            SendSmtpEmail email = new SendSmtpEmail();
+            email.setSender(sender);
+            email.setTo(List.of(recipient));
+            email.setSubject("Your Librarian Account - " + appName);
+            email.setTextContent(buildLibrarianCredentialsEmailBody(toEmail, password, firstName));
+            
+            api.sendTransacEmail(email);
             log.info("Librarian credentials email sent to: {}", toEmail);
         } catch (Exception e) {
             log.error("Failed to send librarian credentials email to: {}", toEmail, e);
