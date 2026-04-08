@@ -30,6 +30,7 @@ async function loadProfile() {
             document.getElementById('profileLastName').value = user.lastName || '';
             document.getElementById('profileUsername').value = user.username || '';
             document.getElementById('profileEmail').value = user.email || '';
+            document.getElementById('profileDob').value = user.dateOfBirth || '';
             document.getElementById('profileRole').value = user.role?.replace('ROLE_', '') || '';
             
             // Update badge

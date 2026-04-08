@@ -147,48 +147,86 @@ function renderResources(resources) {
         return;
     }
     
-    container.innerHTML = resources.map(resource => `
-        <div class="resource-card" onclick="showResourceDetail(${resource.resourceID})">
-            <div class="resource-image" style="position: relative;">
-                ${resource.resourceImage ? 
-                    `<img src="${resource.resourceImage}" alt="${resource.title}">` : 
-                    `<i class="fas fa-${getCategoryIcon(resource.category)}"></i>`
-                }
-                <button class="favorite-btn" onclick="event.stopPropagation(); toggleFavorite(${resource.resourceID}, this)" 
-                    style="position: absolute; top: 0.5rem; right: 0.5rem; background: white; border: none; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.15); transition: all 0.2s; z-index: 10;"
-                    onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                    <i class="far fa-heart" style="color: #9CA3AF; font-size: 1rem; transition: color 0.2s;"></i>
+    container.innerHTML = resources.map(resource => {
+        // Generate star rating HTML
+        const rating = resource.averageRating || 0;
+        let starsHtml = '';
+        for (let i = 1; i <= 5; i++) {
+            if (i <= rating) {
+                starsHtml += '<span class="star">★</span>';
+            } else {
+                starsHtml += '<span class="star empty">★</span>';
+            }
+        }
+        
+        // Determine action buttons based on access
+        const hasFullAccess = resource.hasFullAccess || resource.price === 0;
+        let actionButtons = '';
+        
+        if (hasFullAccess) {
+            actionButtons = `
+                <button class="btn-read" onclick="event.stopPropagation(); readResource(${resource.resourceID})">
+                    <i class="fas fa-book-open"></i> Read
                 </button>
-            </div>
-            <div class="resource-info">
-                <h4>${escapeHtml(resource.title)}</h4>
-                <p>${escapeHtml(resource.author || 'Unknown Author')}</p>
-                ${renderStarRating(resource.averageRating, resource.ratingCount)}
-                <div class="resource-meta">
-                    <span class="resource-price">${resource.price ? resource.price.toLocaleString() : '0'} XAF</span>
-                    ${resource.premiumOnly ? '<span class="resource-badge">Premium</span>' : ''}
+            `;
+        } else if (!isLoggedIn) {
+            actionButtons = `
+                <button class="btn-buy" onclick="event.stopPropagation(); window.location.href='/login'">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+            `;
+        } else if (!isClient) {
+            actionButtons = `
+                <button class="btn-rate" onclick="event.stopPropagation(); showNonClientMessage()">
+                    <i class="fas fa-lock"></i> Client Only
+                </button>
+            `;
+        } else {
+            const isFree = resource.price === 0 || !resource.price;
+            actionButtons = `
+                <button class="btn-buy" onclick="event.stopPropagation(); purchaseResource(${resource.resourceID})">
+                    <i class="fas fa-shopping-cart"></i> ${isFree ? 'Free' : 'Buy'}
+                </button>
+            `;
+        }
+        
+        // Add rate button for all users
+        actionButtons += `
+            <button class="btn-rate" onclick="event.stopPropagation(); openRatingModal(${resource.resourceID}, '${escapeHtml(resource.title)}')">
+                <i class="fas fa-star"></i> Rate
+            </button>
+        `;
+        
+        return `
+            <div class="book-card" onclick="showResourceDetail(${resource.resourceID})">
+                <div class="book-cover-wrapper">
+                    ${resource.resourceImage ? 
+                        `<img src="${resource.resourceImage}" alt="${resource.title}" class="book-cover">` : 
+                        `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--secondary-whisper), var(--primary-midnight)); color: white; font-size: 3rem;">
+                            <i class="fas fa-${getCategoryIcon(resource.category)}"></i>
+                        </div>`
+                    }
+                    ${resource.premiumOnly ? '<span class="book-premium-badge"><i class="fas fa-crown"></i> Premium</span>' : ''}
+                    <button class="book-favorite-btn" onclick="event.stopPropagation(); toggleFavorite(${resource.resourceID}, this)">
+                        <i class="far fa-heart"></i>
+                    </button>
+                </div>
+                <div class="book-info">
+                    <h3 class="book-title">${escapeHtml(resource.title)}</h3>
+                    <p class="book-author">${escapeHtml(resource.author || 'Unknown Author')}</p>
+                    <div class="book-price-rating">
+                        <span class="book-price">${resource.price ? resource.price.toLocaleString() : '0'} XAF</span>
+                        <div class="book-rating">
+                            ${starsHtml}
+                        </div>
+                    </div>
+                    <div class="book-card-actions" onclick="event.stopPropagation()">
+                        ${actionButtons}
+                    </div>
                 </div>
             </div>
-            <div class="resource-actions" onclick="event.stopPropagation()">
-                ${resource.hasFullAccess || resource.price === 0 ? `
-                    <button class="btn-read" onclick="readResource(${resource.resourceID})" title="Read">
-                        <i class="fas fa-book-open"></i> Read
-                    </button>
-                ` : isLoggedIn ? `
-                    <button class="btn-purchase" onclick="purchaseResource(${resource.resourceID})" title="Purchase">
-                        <i class="fas fa-shopping-cart"></i> Buy
-                    </button>
-                ` : `
-                    <button class="btn-purchase" onclick="window.location.href='/login'" title="Login to Purchase">
-                        <i class="fas fa-sign-in-alt"></i> Login to Buy
-                    </button>
-                `}
-                <button class="btn-rate" onclick="openRatingModal(${resource.resourceID}, '${escapeHtml(resource.title)}')" title="Rate">
-                    <i class="fas fa-star"></i> Rate
-                </button>
-            </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 function renderPagination(pageData) {
@@ -647,15 +685,14 @@ function renderProfessionalCard(resource, options = {}) {
     const isFree = resource.price === 0 || !resource.price;
     const isNew = resource.isNew || (resource.createdAt && isRecentlyAdded(resource.createdAt));
     
-    // Determine badge
-    let badgeHtml = '';
-    if (showBadge) {
-        if (resource.premiumOnly) {
-            badgeHtml = '<span class="badge-premium"><i class="fas fa-crown"></i> Premium</span>';
-        } else if (isNew) {
-            badgeHtml = '<span class="badge-new"><i class="fas fa-sparkles"></i> New</span>';
-        } else if (isFree) {
-            badgeHtml = '<span class="badge-free"><i class="fas fa-gift"></i> Free</span>';
+    // Generate star rating HTML
+    const rating = resource.averageRating || 0;
+    let starsHtml = '';
+    for (let i = 1; i <= 5; i++) {
+        if (i <= rating) {
+            starsHtml += '<span class="star">★</span>';
+        } else {
+            starsHtml += '<span class="star empty">★</span>';
         }
     }
     
@@ -669,72 +706,62 @@ function renderProfessionalCard(resource, options = {}) {
     let actionBtn = '';
     if (hasFullAccess) {
         actionBtn = `
-            <button class="card-action-btn read" onclick="event.stopPropagation(); readResource(${resource.resourceID})">
+            <button class="btn-read" onclick="event.stopPropagation(); readResource(${resource.resourceID})">
                 <i class="fas fa-book-open"></i> Read
             </button>
         `;
     } else if (!isLoggedIn) {
         actionBtn = `
-            <button class="card-action-btn buy" onclick="event.stopPropagation(); window.location.href='/login'">
-                <i class="fas fa-sign-in-alt"></i> Login to Buy
+            <button class="btn-buy" onclick="event.stopPropagation(); window.location.href='/login'">
+                <i class="fas fa-sign-in-alt"></i> Login
             </button>
         `;
     } else if (!isClient) {
-        // Logged in but not a client (Librarian/Manager)
         actionBtn = `
-            <button class="card-action-btn" onclick="event.stopPropagation(); showNonClientMessage()" title="Only clients can purchase">
+            <button class="btn-rate" onclick="event.stopPropagation(); showNonClientMessage()">
                 <i class="fas fa-lock"></i> Client Only
             </button>
         `;
     } else {
         actionBtn = `
-            <button class="card-action-btn buy" onclick="event.stopPropagation(); purchaseResource(${resource.resourceID})">
-                <i class="fas fa-shopping-cart"></i> ${isFree ? 'Get Free' : 'Buy'}
+            <button class="btn-buy" onclick="event.stopPropagation(); purchaseResource(${resource.resourceID})">
+                <i class="fas fa-shopping-cart"></i> ${isFree ? 'Free' : 'Buy'}
             </button>
         `;
     }
     
-    // Price display
-    const priceHtml = isFree 
-        ? '<span class="card-price free"><i class="fas fa-gift"></i> FREE</span>'
-        : `<span class="card-price">${resource.price ? resource.price.toLocaleString() : '0'} XAF</span>`;
+    // Add rate button
+    actionBtn += `
+        <button class="btn-rate" onclick="event.stopPropagation(); openRatingModal(${resource.resourceID}, '${escapeHtml(resource.title)}')">
+            <i class="fas fa-star"></i>
+        </button>
+    `;
     
     return `
-        <div class="resource-card-pro" onclick="showResourceDetail(${resource.resourceID})">
-            <div class="card-badges">
-                <div>${badgeHtml}</div>
-                <button class="card-favorite-btn" onclick="event.stopPropagation(); toggleFavoritePro(${resource.resourceID}, this)" title="Add to favorites">
+        <div class="book-card" style="flex: 0 0 220px; min-width: 220px;" onclick="showResourceDetail(${resource.resourceID})">
+            <div class="book-cover-wrapper">
+                ${resource.resourceImage ? 
+                    `<img src="${resource.resourceImage}" alt="${resource.title}" class="book-cover">` : 
+                    `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--secondary-whisper), var(--primary-midnight)); color: white; font-size: 3rem;">
+                        <i class="fas fa-${getCategoryIcon(resource.category)}"></i>
+                    </div>`
+                }
+                ${resource.premiumOnly ? '<span class="book-premium-badge"><i class="fas fa-crown"></i> Premium</span>' : ''}
+                ${isNew ? '<span class="book-premium-badge" style="background: linear-gradient(135deg, #10B981, #059669);"><i class="fas fa-sparkles"></i> New</span>' : ''}
+                <button class="book-favorite-btn" onclick="event.stopPropagation(); toggleFavorite(${resource.resourceID}, this)">
                     <i class="far fa-heart"></i>
                 </button>
             </div>
-            <div class="card-image-wrapper">
-                ${resource.resourceImage ? 
-                    `<img src="${resource.resourceImage}" alt="${resource.title}" class="card-image">` : 
-                    `<div class="card-image-placeholder"><i class="fas fa-${getCategoryIcon(resource.category)}"></i></div>`
-                }
-                <div class="card-image-overlay"></div>
-            </div>
-            <div class="card-content">
-                <div class="card-category">
-                    <i class="fas fa-${getCategoryIcon(resource.category)}"></i>
-                    ${resource.category || 'Resource'}
-                </div>
-                <h3 class="card-title">${escapeHtml(resource.title)}</h3>
-                <p class="card-author">${escapeHtml(resource.author || 'Unknown Author')}</p>
-                
-                <div class="card-stats">
-                    <div class="card-stat rating">
-                        <i class="fas fa-star"></i>
-                        <span>${resource.averageRating ? resource.averageRating.toFixed(1) : '0.0'} (${resource.ratingCount || 0})</span>
-                    </div>
-                    <div class="card-stat views">
-                        <i class="fas fa-eye"></i>
-                        <span>${resource.viewCount || 0}</span>
+            <div class="book-info">
+                <h3 class="book-title">${escapeHtml(resource.title)}</h3>
+                <p class="book-author">${escapeHtml(resource.author || 'Unknown Author')}</p>
+                <div class="book-price-rating">
+                    <span class="book-price">${resource.price ? resource.price.toLocaleString() : '0'} XAF</span>
+                    <div class="book-rating">
+                        ${starsHtml}
                     </div>
                 </div>
-                
-                <div class="card-footer">
-                    ${priceHtml}
+                <div class="book-card-actions" onclick="event.stopPropagation()">
                     ${actionBtn}
                 </div>
             </div>

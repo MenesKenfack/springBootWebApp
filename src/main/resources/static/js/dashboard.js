@@ -158,16 +158,31 @@ async function loadManagerDashboardData() {
             updateStat('systemHealth', stats.systemHealth || 'Good');
             
             // Update system overview
-            document.getElementById('overviewResources').textContent = stats.totalResources?.toLocaleString() || '0';
-            document.getElementById('overviewPurchases').textContent = stats.totalPurchases?.toLocaleString() || '0';
-            document.getElementById('overviewPremium').textContent = stats.premiumUsers?.toLocaleString() || '0';
-            document.getElementById('overviewVerified').textContent = stats.verifiedUsers?.toLocaleString() || '0';
+            const overviewResources = document.getElementById('overviewResources');
+            const overviewPurchases = document.getElementById('overviewPurchases');
+            const overviewPremium = document.getElementById('overviewPremium');
+            const overviewVerified = document.getElementById('overviewVerified');
+            if (overviewResources) {
+                overviewResources.textContent = stats.totalResources?.toLocaleString() || '0';
+            }
+            if (overviewPurchases) {
+                overviewPurchases.textContent = stats.totalPurchases?.toLocaleString() || '0';
+            }
+            if (overviewPremium) {
+                overviewPremium.textContent = stats.premiumUsers?.toLocaleString() || '0';
+            }
+            if (overviewVerified) {
+                overviewVerified.textContent = stats.verifiedUsers?.toLocaleString() || '0';
+            }
         }
         
         // Update last backup info
         if (backupsResponse.success && backupsResponse.data && backupsResponse.data.length > 0) {
             const latestBackup = backupsResponse.data[0];
-            document.getElementById('overviewBackup').textContent = formatDate(latestBackup.createdAt);
+            const overviewBackup = document.getElementById('overviewBackup');
+            if (overviewBackup) {
+                overviewBackup.textContent = formatDate(latestBackup.createdAt);
+            }
         }
         
         // Render recent signups (last 5 users)
@@ -182,6 +197,7 @@ async function loadManagerDashboardData() {
         renderManagementActivity(usersResponse.data || [], reportsResponse.data || [], backupsResponse.data || []);
         
     } catch (error) {
+        console.error('Error loading manager dashboard data:', error);
         Toast.error('Failed to load manager dashboard data');
     }
 }
@@ -218,6 +234,7 @@ async function loadClientDashboardData() {
         renderClientActivity(recentPurchases.data || [], myListResponse.data || []);
         
     } catch (error) {
+        console.error('Error loading client dashboard data:', error);
         Toast.error('Failed to load client dashboard data');
     }
 }
@@ -241,15 +258,24 @@ async function loadLibrarianDashboardData() {
             updateStat('librarianTotalCatalogs', catalogs.length?.toLocaleString() || '0');
             
             // Update overview section
-            document.getElementById('libOverviewTotalResources').textContent = stats.totalResources?.toLocaleString() || '0';
-            document.getElementById('libOverviewTotalCatalogs').textContent = catalogs.length?.toLocaleString() || '0';
+            const libOverviewTotalResources = document.getElementById('libOverviewTotalResources');
+            const libOverviewTotalCatalogs = document.getElementById('libOverviewTotalCatalogs');
+            if (libOverviewTotalResources) {
+                libOverviewTotalResources.textContent = stats.totalResources?.toLocaleString() || '0';
+            }
+            if (libOverviewTotalCatalogs) {
+                libOverviewTotalCatalogs.textContent = catalogs.length?.toLocaleString() || '0';
+            }
         }
         
         // Calculate premium resources and recent uploads from recent resources
         const resources = recentResources.data || [];
         const premiumCount = resources.filter(r => r.isPremiumOnly).length;
         updateStat('librarianPremiumResources', premiumCount.toLocaleString());
-        document.getElementById('libOverviewPremium').textContent = premiumCount.toLocaleString();
+        const libOverviewPremium = document.getElementById('libOverviewPremium');
+        if (libOverviewPremium) {
+            libOverviewPremium.textContent = premiumCount.toLocaleString();
+        }
         
         // Count resources added this month
         const now = new Date();
@@ -274,10 +300,14 @@ async function loadLibrarianDashboardData() {
         });
         const popularCategory = Object.entries(categoryCounts)
             .sort((a, b) => b[1] - a[1])[0];
-        document.getElementById('libOverviewPopularCategory').textContent = 
-            popularCategory ? popularCategory[0] : '-';
+        const libOverviewPopularCategory = document.getElementById('libOverviewPopularCategory');
+        if (libOverviewPopularCategory) {
+            libOverviewPopularCategory.textContent = 
+                popularCategory ? popularCategory[0] : '-';
+        }
         
     } catch (error) {
+        console.error('Error loading librarian dashboard data:', error);
         Toast.error('Failed to load librarian dashboard data');
     }
 }
@@ -509,24 +539,41 @@ function renderRecentResources(resources) {
     const container = document.getElementById('recentResourcesGrid');
     if (!container) return;
     
-    container.innerHTML = resources.map(resource => `
-        <div class="resource-card" onclick="viewResource(${resource.resourceID})">
-            <div class="resource-image">
-                ${resource.resourceImage ? 
-                    `<img src="${resource.resourceImage}" alt="${resource.title}">` : 
-                    `<i class="fas fa-book"></i>`
-                }
-            </div>
-            <div class="resource-info">
-                <h4>${escapeHtml(resource.title)}</h4>
-                <p>${escapeHtml(resource.author || 'Unknown Author')}</p>
-                <div class="resource-meta">
-                    <span class="resource-price">${resource.price ? resource.price.toLocaleString() : '0'} XAF</span>
-                    <span class="resource-badge">${resource.category}</span>
+    container.innerHTML = resources.map(resource => {
+        const rating = resource.averageRating || 0;
+        let starsHtml = '';
+        for (let i = 1; i <= 5; i++) {
+            if (i <= rating) {
+                starsHtml += '<span class="star">★</span>';
+            } else {
+                starsHtml += '<span class="star empty">★</span>';
+            }
+        }
+        
+        return `
+            <div class="book-card" onclick="viewResource(${resource.resourceID})">
+                <div class="book-cover-wrapper">
+                    ${resource.resourceImage ? 
+                        `<img src="${resource.resourceImage}" alt="${resource.title}" class="book-cover">` : 
+                        `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--secondary-whisper), var(--primary-midnight)); color: white; font-size: 3rem;">
+                            <i class="fas fa-book"></i>
+                        </div>`
+                    }
+                    ${resource.premiumOnly ? '<span class="book-premium-badge"><i class="fas fa-crown"></i> Premium</span>' : ''}
+                </div>
+                <div class="book-info">
+                    <h3 class="book-title">${escapeHtml(resource.title)}</h3>
+                    <p class="book-author">${escapeHtml(resource.author || 'Unknown Author')}</p>
+                    <div class="book-price-rating">
+                        <span class="book-price">${resource.price ? resource.price.toLocaleString() : '0'} XAF</span>
+                        <div class="book-rating">
+                            ${starsHtml}
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 async function loadRecentActivities() {

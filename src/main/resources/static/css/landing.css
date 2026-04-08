@@ -796,3 +796,21 @@
         flex: 0 0 160px;
     }
 }
+
+/* Anchor tag book-card styles */
+a.book-card {
+    text-decoration: none;
+    display: block;
+    color: inherit;
+}
+
+a.book-card:hover {
+    text-decoration: none;
+    color: inherit;
+}
+
+a.book-card .book-title,
+a.book-card .book-author {
+    color: inherit;
+}
+

@@ -334,6 +334,67 @@ html {
 }
 
 /* ==========================================
+   THEME 5: DASHBOARD (Unified Dashboard Theme)
+   For: All dashboard pages (profile, users, terms, etc.)
+   Goal: Consistent with auth pages - clean, trustworthy
+   ========================================== */
+.dashboard-page {
+    /* Use the same colors as auth theme for consistency */
+    --primary-color: #2563EB;
+    --primary-dark: #1D4ED8;
+    --primary-light: #3B82F6;
+    --secondary-color: #64748B;
+    --text-dark: #1E2937;
+    --text-medium: #475569;
+    --text-light: #64748B;
+    --bg-white: #FFFFFF;
+    --bg-light: #F8FAFC;
+    --border-color: #E2E8F0;
+    --success-color: #10B981;
+    --error-color: #EF4444;
+    --warning-color: #F59E0B;
+    --accent-starlit: #3B82F6;
+    --soft-glow: #2563EB;
+    --card-bg: #FFFFFF;
+    --header-bg: #FFFFFF;
+    --sidebar-bg: #FFFFFF;
+    --hover-bg: rgba(37, 99, 235, 0.08);
+    --active-bg: rgba(37, 99, 235, 0.12);
+    --input-bg: #FFFFFF;
+    --modal-bg: #FFFFFF;
+    --glass-bg: rgba(255, 255, 255, 0.9);
+}
+
+/* Ensure dashboard inputs match auth page styling */
+.dashboard-page .input-group input,
+.dashboard-page .input-group select,
+.dashboard-page .form-group select,
+.dashboard-page .form-group textarea {
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    padding: 0.625rem 1rem 0.625rem 2.5rem;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.dashboard-page .input-group input:focus,
+.dashboard-page .input-group select:focus,
+.dashboard-page .form-group select:focus,
+.dashboard-page .form-group textarea:focus {
+    outline: none;
+    border-color: var(--accent-starlit);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.dashboard-page .input-group input:disabled {
+    background: #F1F5F9;
+    cursor: not-allowed;
+    color: var(--text-medium);
+}
+
+/* ==========================================
    LEGACY DARK THEME (Sapphire Nightfall)
    Kept for backward compatibility
    ========================================== */
@@ -4165,5 +4226,218 @@ body {
     .category-grid {
         grid-template-columns: 1fr;
     }
+}
+
+/* ================================
+   Book Card Styles (from landing.css)
+   ================================ */
+
+.book-card {
+    background: white;
+    border-radius: 1.5rem;
+    padding: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.book-card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+    border-color: var(--accent-starlit);
+}
+
+.book-cover-wrapper {
+    position: relative;
+    aspect-ratio: 2/3;
+    border-radius: 1rem;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+    background: var(--bg-sapphire);
+}
+
+.book-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 1rem;
+}
+
+.book-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+}
+
+.book-title {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    line-height: 1.4;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    margin: 0;
+}
+
+.book-author {
+    font-size: 0.8125rem;
+    color: var(--text-light);
+    margin: 0;
+}
+
+.book-price-rating {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.5rem;
+}
+
+.book-price {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--soft-glow);
+}
+
+.book-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.125rem;
+}
+
+.book-rating .star {
+    color: #fbbf24;
+    font-size: 0.875rem;
+}
+
+.book-rating .star.empty {
+    color: #d1d5db;
+}
+
+/* Book card action buttons */
+.book-card-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.book-card-actions button {
+    flex: 1;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.book-card-actions .btn-read {
+    background: var(--primary-color);
+    color: white;
+}
+
+.book-card-actions .btn-read:hover {
+    background: var(--accent-starlit);
+}
+
+.book-card-actions .btn-buy {
+    background: linear-gradient(135deg, #F59E0B, #D97706);
+    color: white;
+}
+
+.book-card-actions .btn-buy:hover {
+    background: linear-gradient(135deg, #D97706, #B45309);
+}
+
+.book-card-actions .btn-rate {
+    background: var(--hover-bg);
+    color: var(--text-medium);
+}
+
+.book-card-actions .btn-rate:hover {
+    background: var(--border-color);
+    color: var(--text-dark);
+}
+
+/* Favorite button for book card */
+.book-favorite-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.95);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: all 0.2s;
+    z-index: 10;
+}
+
+.book-favorite-btn:hover {
+    transform: scale(1.1);
+    background: white;
+}
+
+.book-favorite-btn i {
+    color: #9CA3AF;
+    font-size: 1rem;
+    transition: color 0.2s;
+}
+
+.book-favorite-btn.active i,
+.book-favorite-btn:hover i {
+    color: #EF4444;
+}
+
+/* Premium badge for book card */
+.book-premium-badge {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    background: linear-gradient(135deg, #F59E0B, #D97706);
+    color: white;
+    padding: 0.25rem 0.625rem;
+    border-radius: 1rem;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+}
+
+/* Dark theme adjustments for book card */
+[data-theme="dark"] .book-card {
+    background: var(--card-bg);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .book-title {
+    color: var(--text-dark);
+}
+
+[data-theme="dark"] .book-author {
+    color: var(--text-light);
+}
+
+[data-theme="dark"] .book-price {
+    color: var(--soft-glow);
 }
 

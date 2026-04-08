@@ -26,20 +26,24 @@ async function loadActiveTerms() {
     try {
         const response = await termsAPI.getActive();
         
-        if (response.success) {
+        if (response.success && response.data) {
             renderActiveTerms(response.data);
         } else {
-            document.getElementById('activeTermsContent').innerHTML = `
-                <div class="alert alert-info">
-                    <i class="fas fa-info-circle"></i> No active terms currently set.
-                </div>
-            `;
+            renderNoActiveTerms();
         }
     } catch (error) {
-        Toast.error('Failed to load active terms');
-        document.getElementById('activeTermsContent').innerHTML = `
-            <div class="alert alert-info">
-                <i class="fas fa-info-circle"></i> No active terms currently set.
+        console.log('No active terms found or error loading:', error);
+        renderNoActiveTerms();
+    }
+}
+
+function renderNoActiveTerms() {
+    const content = document.getElementById('activeTermsContent');
+    if (content) {
+        content.innerHTML = `
+            <div class="alert alert-info" style="padding: 1.5rem; text-align: center; color: var(--text-medium);">
+                <i class="fas fa-info-circle" style="font-size: 1.5rem; margin-bottom: 0.5rem; display: block;"></i>
+                <p>No active terms currently set. Create and activate a terms version to display it here.</p>
             </div>
         `;
     }

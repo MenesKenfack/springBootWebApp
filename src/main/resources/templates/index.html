@@ -17,7 +17,7 @@
         </a>
         <div class="nav-links">
             <a href="#features">Features</a>
-            <a href="/resources">Resources</a>
+            <a href="#resources">Resources</a>
             <div class="nav-cta">
                 <a th:href="@{/login}" href="/login" class="btn-nav btn-nav-outline">Login</a>
                 <a th:href="@{/register}" href="/register" class="btn-nav btn-nav-primary">Get Started</a>
@@ -266,7 +266,7 @@
                     <div class="books-scroll-container">
                         <div class="books-row">
                             <!-- Dynamic Trending Resources -->
-                            <div class="book-card" th:each="resource : ${trendingResources}" th:href="@{/resource/{id}(id=${resource.resourceID})}">
+                            <a class="book-card" th:each="resource : ${trendingResources}" th:href="@{/resource/{id}(id=${resource.resourceID})}">
                                 <div class="book-cover-wrapper">
                                     <img th:src="${resource.resourceImage != null ? resource.resourceImage : 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=300&h=450&fit=crop'}" 
                                         th:alt="${resource.title}" class="book-cover">
@@ -282,7 +282,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </a>
                             <!-- Fallback message if no resources -->
                             <div th:if="${#lists.isEmpty(trendingResources)}" class="book-card">
                                 <div class="book-info">
@@ -320,7 +320,7 @@
                     <div class="books-scroll-container">
                         <div class="books-row">
                             <!-- Dynamic Best Selling Resources -->
-                            <div class="book-card" th:each="resource : ${bestSellingResources}" th:href="@{/resource/{id}(id=${resource.resourceID})}">
+                            <a class="book-card" th:each="resource : ${bestSellingResources}" th:href="@{/resource/{id}(id=${resource.resourceID})}">
                                 <div class="book-cover-wrapper">
                                     <img th:src="${resource.resourceImage != null ? resource.resourceImage : 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=300&h=450&fit=crop'}" 
                                         th:alt="${resource.title}" class="book-cover">
@@ -336,7 +336,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </a>
                             <!-- Fallback message if no resources -->
                             <div th:if="${#lists.isEmpty(bestSellingResources)}" class="book-card">
                                 <div class="book-info">
@@ -374,7 +374,7 @@
                     <div class="books-scroll-container">
                         <div class="books-row">
                             <!-- Dynamic Popular Resources -->
-                            <div class="book-card" th:each="resource : ${popularResources}" th:href="@{/resource/{id}(id=${resource.resourceID})}">
+                            <a class="book-card" th:each="resource : ${popularResources}" th:href="@{/resource/{id}(id=${resource.resourceID})}">
                                 <div class="book-cover-wrapper">
                                     <img th:src="${resource.resourceImage != null ? resource.resourceImage : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=450&fit=crop'}" 
                                         th:alt="${resource.title}" class="book-cover">
@@ -390,7 +390,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </a>
                             <!-- Fallback message if no resources -->
                             <div th:if="${#lists.isEmpty(popularResources)}" class="book-card">
                                 <div class="book-info">
@@ -428,7 +428,7 @@
                     <div class="books-scroll-container">
                         <div class="books-row">
                             <!-- Dynamic Newly Added Resources -->
-                            <div class="book-card" th:each="resource : ${newlyAddedResources}" th:href="@{/resource/{id}(id=${resource.resourceID})}">
+                            <a class="book-card" th:each="resource : ${newlyAddedResources}" th:href="@{/resource/{id}(id=${resource.resourceID})}">
                                 <div class="book-cover-wrapper">
                                     <img th:src="${resource.resourceImage != null ? resource.resourceImage : 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=300&h=450&fit=crop'}" 
                                         th:alt="${resource.title}" class="book-cover">
@@ -444,7 +444,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </a>
                             <!-- Fallback message if no resources -->
                             <div th:if="${#lists.isEmpty(newlyAddedResources)}" class="book-card">
                                 <div class="book-info">
@@ -526,7 +526,7 @@
             </div>
             <div class="footer-links">
                 <a href="#features">Features</a>
-                <a th:href="#" href="/resources">Resources</a>
+                <a th:href="#" href="#resources">Resources</a>
                 <a th:href="@{/login}" href="/login">Sign In</a>
                 <a th:href="@{/register}" href="/register">Get Started</a>
             </div>
