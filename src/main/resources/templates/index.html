@@ -579,8 +579,30 @@
             });
         }
         
-        // Redirect to dashboard if already logged in
-        if (localStorage.getItem('token')) {
+        // Search input focus effects
+        const searchInput = document.getElementById('resourceSearchInput');
+        if (searchInput) {
+            searchInput.addEventListener('focus', function() {
+                this.style.borderColor = '#2563EB';
+                this.style.boxShadow = '0 0 0 3px rgba(37, 99, 235, 0.1)';
+            });
+            
+            searchInput.addEventListener('blur', function() {
+                this.style.borderColor = '#E2E8F0';
+                this.style.boxShadow = 'none';
+            });
+            
+            // Allow Enter key to submit
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    document.getElementById('resourceSearchForm').submit();
+                }
+            });
+        }
+        
+        // Redirect to dashboard if already logged in (using sessionStorage)
+        if (sessionStorage.getItem('token')) {
             window.location.href = '/dashboard';
         }
     </script>

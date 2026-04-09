@@ -278,6 +278,7 @@ public class LandingService {
                 .author(resource.getAuthor())
                 .category(resource.getCategory())
                 .resourceImage(resource.getResourceImage())
+                .resourceFile(resource.getResourceFile())
                 .description(resource.getDescription())
                 .price(resource.getPrice())
                 .isPremiumOnly(resource.isPremiumOnly())

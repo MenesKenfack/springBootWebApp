@@ -26,5 +26,6 @@ public class ResourceResponse {
     private String userTier;
     private String previewContent;
     private String fullContent;
+    private String resourceFile;
     private LocalDateTime createdAt;
 }

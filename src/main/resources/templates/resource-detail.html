@@ -114,9 +114,15 @@
                     <a th:href="@{/resources}" class="btn-hero btn-hero-primary" style="text-decoration: none;">
                         <i class="fas fa-shopping-cart"></i> Purchase
                     </a>
-                    <a th:href="@{/resources}" class="btn-hero btn-hero-secondary" style="text-decoration: none;">
+                    <button th:if="${resource.resourceFile != null}" 
+                            th:onclick="'openResourceFile(\'' + ${resource.resourceFile} + '\')'" 
+                            class="btn-hero btn-hero-secondary" style="text-decoration: none; border: none; cursor: pointer;">
                         <i class="fas fa-book-open"></i> Preview
-                    </a>
+                    </button>
+                    <button th:unless="${resource.resourceFile != null}" 
+                            class="btn-hero btn-hero-secondary" style="text-decoration: none; border: none; cursor: not-allowed; opacity: 0.5;" disabled>
+                        <i class="fas fa-book-open"></i> No Preview
+                    </button>
                 </div>
             </div>
         </div>
@@ -217,6 +223,15 @@
                     searchForm.submit();
                 }
             });
+        }
+
+        // Open resource file in new tab for preview
+        function openResourceFile(fileUrl) {
+            if (fileUrl) {
+                window.open(fileUrl, '_blank');
+            } else {
+                alert('No preview file available for this resource');
+            }
         }
     </script>
 </body>

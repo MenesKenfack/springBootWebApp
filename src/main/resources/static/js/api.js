@@ -1,27 +1,27 @@
 // API Configuration
 const API_BASE_URL = window.location.origin + '/api';
 
-// Token Management
+// Token Management - Using sessionStorage so tokens clear when browser closes
 const TokenManager = {
     getToken() {
-        return localStorage.getItem('token');
+        return sessionStorage.getItem('token');
     },
     
     getRefreshToken() {
-        return localStorage.getItem('refreshToken');
+        return sessionStorage.getItem('refreshToken');
     },
     
     setToken(token, refreshToken) {
-        localStorage.setItem('token', token);
+        sessionStorage.setItem('token', token);
         if (refreshToken) {
-            localStorage.setItem('refreshToken', refreshToken);
+            sessionStorage.setItem('refreshToken', refreshToken);
         }
     },
     
     clearTokens() {
-        localStorage.removeItem('token');
-        localStorage.removeItem('refreshToken');
-        localStorage.removeItem('user');
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('refreshToken');
+        sessionStorage.removeItem('user');
     },
     
     isAuthenticated() {
@@ -29,15 +29,15 @@ const TokenManager = {
     }
 };
 
-// User Storage
+// User Storage - Using sessionStorage so user data clears when browser closes
 const UserStorage = {
     getUser() {
-        const user = localStorage.getItem('user');
+        const user = sessionStorage.getItem('user');
         return user ? JSON.parse(user) : null;
     },
     
     setUser(user) {
-        localStorage.setItem('user', JSON.stringify(user));
+        sessionStorage.setItem('user', JSON.stringify(user));
     },
     
     getRole() {

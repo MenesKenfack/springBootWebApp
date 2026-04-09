@@ -149,6 +149,7 @@ public class ResourceService {
                 .author(resource.getAuthor())
                 .category(resource.getCategory())
                 .resourceImage(resource.getResourceImage())
+                .resourceFile(resource.getResourceFile())
                 .description(resource.getDescription())
                 .price(resource.getPrice())
                 .isPremiumOnly(resource.isPremiumOnly())
@@ -514,6 +515,7 @@ public class ResourceService {
                 .author(resource.getAuthor())
                 .category(resource.getCategory())
                 .resourceImage(resource.getResourceImage())
+                .resourceFile(resource.getResourceFile())
                 .description(resource.getDescription())
                 .price(resource.getPrice())
                 .isPremiumOnly(resource.isPremiumOnly())
@@ -524,9 +526,10 @@ public class ResourceService {
     
     private String saveFile(MultipartFile file, String subDir) throws IOException {
         // Create upload directory if it doesn't exist
-        Path uploadPath = Paths.get(uploadDir, subDir);
+        Path uploadPath = Paths.get(uploadDir, subDir).toAbsolutePath().normalize();
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
+            log.info("Created upload subdirectory: {}", uploadPath);
         }
         
         // Generate unique filename
@@ -540,6 +543,8 @@ public class ResourceService {
         // Save file
         Path targetPath = uploadPath.resolve(filename);
         Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
+        
+        log.info("Saved file: {} to {} (size: {} bytes)", filename, targetPath, file.getSize());
         
         // Return relative path for access
         return subDir.equals("images") ? imageAccessPath + "/" + filename : fileAccessPath + "/" + filename;

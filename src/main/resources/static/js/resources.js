@@ -22,12 +22,12 @@ function checkForSearchParam() {
     const searchQuery = urlParams.get('search');
     
     if (searchQuery) {
-        const searchInput = document.getElementById('searchInput');
+        const searchInput = document.getElementById('resourceSearchInput') || document.getElementById('searchInput');
         if (searchInput) {
             searchInput.value = searchQuery;
-            currentPage = 0;
-            loadResources();
         }
+        // Reload sections with search filter
+        loadResourceSections();
     }
 }
 
@@ -46,14 +46,40 @@ function checkForCategoryParam() {
 
 function setupFilters() {
     const searchInput = document.getElementById('searchInput');
+    const resourceSearchInput = document.getElementById('resourceSearchInput');
     const categoryFilter = document.getElementById('categoryFilter');
     const sortBy = document.getElementById('sortBy');
     
+    // Old search input (if exists)
     if (searchInput) {
         searchInput.addEventListener('input', debounce(() => {
             currentPage = 0;
             loadResources();
         }, 300));
+    }
+    
+    // New search input for the index.html design
+    if (resourceSearchInput) {
+        resourceSearchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const form = document.getElementById('resourceSearchForm');
+                if (form) {
+                    form.submit();
+                }
+            }
+        });
+        
+        // Add focus effects
+        resourceSearchInput.addEventListener('focus', function() {
+            this.style.borderColor = '#2563EB';
+            this.style.boxShadow = '0 0 0 3px rgba(37, 99, 235, 0.1)';
+        });
+        
+        resourceSearchInput.addEventListener('blur', function() {
+            this.style.borderColor = '#E2E8F0';
+            this.style.boxShadow = 'none';
+        });
     }
     
     if (categoryFilter) {
@@ -456,11 +482,30 @@ async function readResource(resourceId) {
         
         if (response.success) {
             const resource = response.data;
-            // Open resource in new tab or show reader modal
-            if (resource.fullContent) {
-                window.open(resource.fullContent, '_blank');
+            
+            // Check if user has full access
+            if (resource.hasFullAccess) {
+                // PREMIUM or purchased users - open full content
+                if (resource.fullContent) {
+                    window.open(resource.fullContent, '_blank');
+                } else if (resource.resourceFile) {
+                    window.open(resource.resourceFile, '_blank');
+                } else {
+                    showReaderModal(resource);
+                }
+            } else if (resource.userTier === 'BASIC') {
+                // BASIC users - open the resource file directly if available
+                if (resource.resourceFile) {
+                    Toast.info('Opening resource in preview mode...');
+                    window.open(resource.resourceFile, '_blank');
+                } else if (resource.previewContent) {
+                    // Fallback to preview content if no file
+                    showReaderModal(resource);
+                } else {
+                    Toast.warning('No preview available for this resource');
+                }
             } else {
-                // Show content in modal
+                // No access - show purchase modal
                 showReaderModal(resource);
             }
         } else {
@@ -786,12 +831,201 @@ function renderSectionHeader(title, icon, type, viewAllLink = null) {
 }
 
 async function loadResourceSections() {
-    // Load all sections in parallel
+    // Load all sections in parallel for the new design
     await Promise.all([
-        loadRecommendedSection(),
-        loadNewlyAddedSection(),
-        loadTopRatedSection()
+        loadTrendingSection(),
+        loadBestSellingSection(),
+        loadPopularSection(),
+        loadNewlyAddedSectionNew()
     ]);
+}
+
+// New section loaders for the index.html design
+async function loadTrendingSection() {
+    const container = document.getElementById('trendingBooks');
+    if (!container) return;
+    
+    try {
+        const response = await resourcesAPI.search({ size: 8, sort: 'popular' });
+        
+        if (response.success && response.data.content.length > 0) {
+            const resources = response.data.content.slice(0, 6);
+            container.innerHTML = resources.map(r => renderBookCard(r)).join('');
+        } else {
+            container.innerHTML = '<div class="book-card"><div class="book-info"><h3 class="book-title">No trending books yet</h3><p class="book-author">Check back soon!</p></div></div>';
+        }
+    } catch (error) {
+        container.innerHTML = '<div class="book-card"><div class="book-info"><h3 class="book-title">Failed to load</h3><p class="book-author">Please try again later</p></div></div>';
+    }
+}
+
+async function loadBestSellingSection() {
+    const container = document.getElementById('bestSellingBooks');
+    if (!container) return;
+    
+    try {
+        // Search by most purchased/totalSales
+        const response = await resourcesAPI.search({ size: 8 });
+        
+        if (response.success && response.data.content.length > 0) {
+            // Sort by totalSales if available
+            const resources = response.data.content
+                .sort((a, b) => (b.totalSales || 0) - (a.totalSales || 0))
+                .slice(0, 6);
+            container.innerHTML = resources.map(r => renderBookCard(r)).join('');
+        } else {
+            container.innerHTML = '<div class="book-card"><div class="book-info"><h3 class="book-title">No bestsellers yet</h3><p class="book-author">Be the first to purchase!</p></div></div>';
+        }
+    } catch (error) {
+        container.innerHTML = '<div class="book-card"><div class="book-info"><h3 class="book-title">Failed to load</h3><p class="book-author">Please try again later</p></div></div>';
+    }
+}
+
+async function loadPopularSection() {
+    const container = document.getElementById('popularBooks');
+    if (!container) return;
+    
+    try {
+        const response = await resourcesAPI.search({ size: 8, sort: 'popular' });
+        
+        if (response.success && response.data.content.length > 0) {
+            const resources = response.data.content
+                .sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0))
+                .slice(0, 6);
+            container.innerHTML = resources.map(r => renderBookCard(r)).join('');
+        } else {
+            container.innerHTML = '<div class="book-card"><div class="book-info"><h3 class="book-title">No popular books yet</h3><p class="book-author">Start rating books!</p></div></div>';
+        }
+    } catch (error) {
+        container.innerHTML = '<div class="book-card"><div class="book-info"><h3 class="book-title">Failed to load</h3><p class="book-author">Please try again later</p></div></div>';
+    }
+}
+
+async function loadNewlyAddedSectionNew() {
+    const container = document.getElementById('newlyAddedBooks');
+    if (!container) return;
+    
+    try {
+        const response = await resourcesAPI.getRecent();
+        
+        if (response.success && response.data.length > 0) {
+            const resources = response.data.slice(0, 6).map(r => ({ ...r, isNew: true }));
+            container.innerHTML = resources.map(r => renderBookCard(r)).join('');
+        } else {
+            container.innerHTML = '<div class="book-card"><div class="book-info"><h3 class="book-title">No new books yet</h3><p class="book-author">Stay tuned for updates!</p></div></div>';
+        }
+    } catch (error) {
+        container.innerHTML = '<div class="book-card"><div class="book-info"><h3 class="book-title">Failed to load</h3><p class="book-author">Please try again later</p></div></div>';
+    }
+}
+
+// Render book card using the landing.css design
+function renderBookCard(resource) {
+    const isNew = resource.isNew || isRecentlyAdded(resource.createdAt);
+    const numRating = resource.averageRating || 0;
+    
+    // Generate stars
+    let starsHtml = '';
+    for (let i = 1; i <= 5; i++) {
+        starsHtml += `<span class="star" style="${i <= numRating ? '' : 'color: #d1d5db;'}">★</span>`;
+    }
+    
+    return `
+        <a class="book-card" href="/resource/${resource.resourceID}">
+            <div class="book-cover-wrapper">
+                <img src="${resource.resourceImage || 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=300&h=450&fit=crop'}" 
+                    alt="${escapeHtml(resource.title)}" class="book-cover">
+            </div>
+            <div class="book-info">
+                <h3 class="book-title">${escapeHtml(resource.title)}</h3>
+                <p class="book-author">${escapeHtml(resource.author || 'Unknown Author')}</p>
+                <div class="book-price-rating">
+                    <span class="book-price">XAF${resource.price ? resource.price.toLocaleString() : '0'}</span>
+                    <div class="book-rating">
+                        ${starsHtml}
+                    </div>
+                </div>
+            </div>
+        </a>
+    `;
+}
+
+// Load category for "View all" clicks
+function loadCategory(category) {
+    // Store the selected category
+    sessionStorage.setItem('selectedCategory', category);
+    
+    // Show a toast and scroll to show more of that category
+    const categoryNames = {
+        'trending': 'Trending Now',
+        'bestselling': 'Best Selling',
+        'popular': 'Popular Books',
+        'new': 'Newly Added'
+    };
+    
+    Toast.info(`Showing ${categoryNames[category] || category} books`);
+    
+    // Reload with more items for that category
+    const containerMap = {
+        'trending': 'trendingBooks',
+        'bestselling': 'bestSellingBooks',
+        'popular': 'popularBooks',
+        'new': 'newlyAddedBooks'
+    };
+    
+    const containerId = containerMap[category];
+    if (containerId) {
+        loadMoreForCategory(category, containerId);
+    }
+}
+
+async function loadMoreForCategory(category, containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    
+    // Show loading state
+    container.style.opacity = '0.5';
+    
+    try {
+        let response;
+        switch(category) {
+            case 'trending':
+            case 'popular':
+                response = await resourcesAPI.search({ size: 12, sort: 'popular' });
+                break;
+            case 'bestselling':
+                response = await resourcesAPI.search({ size: 12 });
+                break;
+            case 'new':
+                response = await resourcesAPI.getRecent();
+                break;
+            default:
+                response = await resourcesAPI.search({ size: 12 });
+        }
+        
+        if (response.success) {
+            let resources;
+            if (category === 'new') {
+                resources = response.data || [];
+            } else {
+                resources = response.data.content || [];
+            }
+            
+            // Sort if needed
+            if (category === 'bestselling') {
+                resources = resources.sort((a, b) => (b.totalSales || 0) - (a.totalSales || 0));
+            } else if (category === 'popular') {
+                resources = resources.sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0));
+            }
+            
+            resources = resources.slice(0, 10);
+            container.innerHTML = resources.map(r => renderBookCard(r)).join('');
+        }
+    } catch (error) {
+        Toast.error('Failed to load more books');
+    } finally {
+        container.style.opacity = '1';
+    }
 }
 
 async function loadRecommendedSection() {

@@ -18,6 +18,7 @@ public class LandingResourceResponse {
     private String author;
     private ResourceCategory category;
     private String resourceImage;
+    private String resourceFile;
     private String description;
     private BigDecimal price;
     private boolean isPremiumOnly;

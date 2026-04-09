@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Library Resources - Kaksha Digital Library</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css">
+    <link rel="stylesheet" th:href="@{/css/animations.css}" href="/css/animations.css">
+    <link rel="stylesheet" th:href="@{/css/landing.css}" href="/css/landing.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body class="dashboard-page">
@@ -65,7 +67,7 @@
             </div>
         </aside>
         
-        <main class="main-content">
+        <main class="main-content" style="overflow-y: auto;">
             <header class="top-header">
                 <div class="header-left">
                     <h1>Library Resources</h1>
@@ -80,191 +82,145 @@
                 </div>
             </header>
             
-            <div class="dashboard-content resources-layout">
-                <!-- Filter Sidebar -->
-                <aside class="filter-sidebar">
-                    <h3 class="filter-sidebar-title">Filter Option</h3>
-                    
-                    <!-- Best Sales - Dynamic -->
-                    <div class="filter-section" id="bestSalesSection">
-                        <div class="accordion-header active" onclick="toggleAccordion(this)">
-                            <span id="bestSalesTitle">Best Sales (<span class="count">0</span>)</span>
-                            <i class="fas fa-minus accordion-icon"></i>
-                        </div>
-                        <div class="accordion-content expanded">
-                            <div class="book-list" id="bestSalesList">
-                                <!-- Dynamic content -->
+            <div class="dashboard-content" style="padding: 0; background: #f8f9fa;">
+                <!-- Resources Section - Same design as index.html -->
+                <section class="resources-section" style="padding: 2rem;">
+                    <!-- Resource Search Bar -->
+                    <div style="margin-bottom: 2rem;">
+                        <form th:action="@{/resources}" method="get" id="resourceSearchForm" style="display: flex; gap: 0.75rem; max-width: 600px;">
+                            <div style="flex: 1; position: relative;">
+                                <i class="fas fa-search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #64748B; font-size: 1rem;"></i>
+                                <input type="text" name="search" id="resourceSearchInput" placeholder="Search digital resources by title, author, or ISBN..." required
+                                    style="width: 100%; padding: 0.875rem 1rem 0.875rem 2.75rem; border: 1px solid #E2E8F0; border-radius: 0.75rem; font-size: 0.9375rem; color: #1E2937; background: white; transition: all 0.2s ease; outline: none;">
                             </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Most Commented - Dynamic -->
-                    <div class="filter-section" id="mostCommentedSection">
-                        <div class="accordion-header" onclick="toggleAccordion(this)">
-                            <span id="mostCommentedTitle">Most Commented (<span class="count">0</span>)</span>
-                            <i class="fas fa-plus accordion-icon"></i>
-                        </div>
-                        <div class="accordion-content">
-                            <div class="book-list" id="mostCommentedList">
-                                <!-- Dynamic content -->
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Newest Books - Dynamic -->
-                    <div class="filter-section" id="newestBooksSection">
-                        <div class="accordion-header" onclick="toggleAccordion(this)">
-                            <span id="newestBooksTitle">Newest Books (<span class="count">0</span>)</span>
-                            <i class="fas fa-plus accordion-icon"></i>
-                        </div>
-                        <div class="accordion-content">
-                            <div class="book-list" id="newestBooksList">
-                                <!-- Dynamic content -->
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Featured - Dynamic -->
-                    <div class="filter-section" id="featuredSection">
-                        <div class="accordion-header" onclick="toggleAccordion(this)">
-                            <span id="featuredTitle">Featured (<span class="count">0</span>)</span>
-                            <i class="fas fa-plus accordion-icon"></i>
-                        </div>
-                        <div class="accordion-content">
-                            <div class="book-list" id="featuredList">
-                                <!-- Dynamic content -->
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Watch History - Dynamic (User-specific) -->
-                    <div class="filter-section" id="watchHistorySection">
-                        <div class="accordion-header" onclick="toggleAccordion(this)">
-                            <span id="watchHistoryTitle">Watch History (<span class="count">0</span>)</span>
-                            <i class="fas fa-plus accordion-icon"></i>
-                        </div>
-                        <div class="accordion-content">
-                            <div class="book-list" id="watchHistoryList">
-                                <p class="empty-message" style="padding: 0.5rem 0; color: #9CA3AF; font-size: 0.875rem;">No history yet</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Best Books - Dynamic -->
-                    <div class="filter-section" id="bestBooksSection">
-                        <div class="accordion-header" onclick="toggleAccordion(this)">
-                            <span id="bestBooksTitle">Best Books (<span class="count">0</span>)</span>
-                            <i class="fas fa-plus accordion-icon"></i>
-                        </div>
-                        <div class="accordion-content">
-                            <div class="book-list" id="bestBooksList">
-                                <!-- Dynamic content -->
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <a href="#" class="view-more-link">View more</a>
-                    
-                    <!-- Choose Publisher (Authors) - Dynamic -->
-                    <div class="filter-dropdown-section">
-                        <label class="filter-label">Choose Author</label>
-                        <div class="custom-select-wrapper">
-                            <select id="authorFilter" class="custom-select">
-                                <option value="">Select Author</option>
-                                <option th:each="author : ${authors}" th:value="${author}" th:text="${author}">Author Name</option>
-                            </select>
-                            <i class="fas fa-chevron-down select-arrow"></i>
-                        </div>
-                    </div>
-                    
-                    <!-- Select Year - Dynamic -->
-                    <div class="filter-dropdown-section">
-                        <label class="filter-label">Select Year</label>
-                        <div class="custom-select-wrapper">
-                            <select id="yearFilter" class="custom-select">
-                                <option value="">Select Year</option>
-                                <!-- Dynamic options will be loaded -->
-                            </select>
-                            <i class="fas fa-chevron-down select-arrow"></i>
-                        </div>
-                    </div>
-                    
-                    <!-- Shop by Category - Dynamic -->
-                    <div class="filter-section" id="categorySection">
-                        <div class="accordion-header active" onclick="toggleAccordion(this)">
-                            <span>Shop by Category</span>
-                            <i class="fas fa-minus accordion-icon"></i>
-                        </div>
-                        <div class="accordion-content expanded">
-                            <div class="category-grid" id="categoryGrid">
-                                <!-- Dynamic categories will be loaded -->
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Action Buttons -->
-                    <div class="filter-actions">
-                        <button class="btn-refine" onclick="refineSearch()">
-                            <i class="fas fa-search"></i> Refine Search
-                        </button>
-                        <button class="btn-reset" onclick="resetFilters()">
-                            Reset Filter
-                        </button>
-                    </div>
-                </aside>
-                
-                <!-- Main Content Area -->
-                <div class="resources-main">
-                    <!-- Top Bar -->
-                    <div class="resources-topbar">
-                        <div class="tabs-container">
-                            <button class="tab-btn active" data-tab="today">Today</button>
-                            <button class="tab-btn" data-tab="week">This Week</button>
-                            <button class="tab-btn" data-tab="month">This Month</button>
-                        </div>
-                        <div class="view-controls">
-                            <button class="view-btn" title="List View">
-                                <i class="fas fa-list"></i>
+                            <button type="submit" class="btn-hero btn-hero-primary" style="padding: 0.875rem 1.5rem; white-space: nowrap;">
+                                <i class="fas fa-search"></i> Search
                             </button>
-                            <button class="view-btn" title="Small Grid">
-                                <i class="fas fa-th"></i>
-                            </button>
-                            <button class="view-btn active" title="Large Grid">
-                                <i class="fas fa-th-large"></i>
-                            </button>
-                            <div class="sort-dropdown">
-                                <select id="sortBy" class="sort-select">
-                                    <option value="newest">Newest</option>
-                                    <option value="oldest">Oldest</option>
-                                    <option value="price-low">Price: Low to High</option>
-                                    <option value="price-high">Price: High to Low</option>
-                                </select>
-                                <i class="fas fa-chevron-down sort-arrow"></i>
+                        </form>
+                    </div>
+                    
+                    <div class="resources-container">
+                        <!-- Trending Now Section -->
+                        <div class="resource-category">
+                            <div class="category-header">
+                                <h2 class="category-title">Trending Now</h2>
+                                <a href="#" class="view-all-link" onclick="loadCategory('trending'); return false;">
+                                    View all
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </a>
+                            </div>
+                            <div class="books-row-wrapper">
+                                <div class="books-scroll-container">
+                                    <div class="books-row" id="trendingBooks">
+                                        <!-- Dynamic Trending Resources loaded via JS -->
+                                    </div>
+                                </div>
+                                <div class="promo-card">
+                                    <div class="promo-icon">
+                                        <i class="fas fa-fire"></i>
+                                    </div>
+                                    <h3 class="promo-title">Trending Picks</h3>
+                                    <p class="promo-text">Discover what everyone's reading this week</p>
+                                    <a href="#" class="promo-btn" onclick="loadCategory('trending'); return false;">
+                                        Explore <i class="fas fa-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bestselling Books Section -->
+                        <div class="resource-category">
+                            <div class="category-header">
+                                <h2 class="category-title">Best selling Books</h2>
+                                <a href="#" class="view-all-link" onclick="loadCategory('bestselling'); return false;">
+                                    View all
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </a>
+                            </div>
+                            <div class="books-row-wrapper">
+                                <div class="books-scroll-container">
+                                    <div class="books-row" id="bestSellingBooks">
+                                        <!-- Dynamic Best Selling Resources loaded via JS -->
+                                    </div>
+                                </div>
+                                <div class="promo-card summer">
+                                    <div class="promo-icon">
+                                        <i class="fas fa-crown"></i>
+                                    </div>
+                                    <h3 class="promo-title">Top Sellers</h3>
+                                    <p class="promo-text">The most popular books loved by readers</p>
+                                    <a href="#" class="promo-btn" onclick="loadCategory('bestselling'); return false;">
+                                        Browse <i class="fas fa-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Popular Books Section -->
+                        <div class="resource-category">
+                            <div class="category-header">
+                                <h2 class="category-title">Popular Books</h2>
+                                <a href="#" class="view-all-link" onclick="loadCategory('popular'); return false;">
+                                    View all
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </a>
+                            </div>
+                            <div class="books-row-wrapper">
+                                <div class="books-scroll-container">
+                                    <div class="books-row" id="popularBooks">
+                                        <!-- Dynamic Popular Resources loaded via JS -->
+                                    </div>
+                                </div>
+                                <div class="promo-card study">
+                                    <div class="promo-icon">
+                                        <i class="fas fa-heart"></i>
+                                    </div>
+                                    <h3 class="promo-title">Reader Favorites</h3>
+                                    <p class="promo-text">Books that have captured hearts worldwide</p>
+                                    <a href="#" class="promo-btn" onclick="loadCategory('popular'); return false;">
+                                        Discover <i class="fas fa-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Newly Added Section -->
+                        <div class="resource-category">
+                            <div class="category-header">
+                                <h2 class="category-title">Newly Added</h2>
+                                <a href="#" class="view-all-link" onclick="loadCategory('new'); return false;">
+                                    View all
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </a>
+                            </div>
+                            <div class="books-row-wrapper">
+                                <div class="books-scroll-container">
+                                    <div class="books-row" id="newlyAddedBooks">
+                                        <!-- Dynamic Newly Added Resources loaded via JS -->
+                                    </div>
+                                </div>
+                                <div class="promo-card new">
+                                    <div class="promo-icon">
+                                        <i class="fas fa-sparkles"></i>
+                                    </div>
+                                    <h3 class="promo-title">Fresh Arrivals</h3>
+                                    <p class="promo-text">New books added to our collection</p>
+                                    <a href="#" class="promo-btn" onclick="loadCategory('new'); return false;">
+                                        See All New <i class="fas fa-arrow-right"></i>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Book Grid -->
-                    <div class="book-grid" id="resourcesGrid">
-                        <!-- Dynamic content will be loaded here -->
-                    </div>
-                    
-                    <!-- Pagination -->
-                    <div class="pagination-container">
-                        <span class="showing-text">Showing 12 from 50 data</span>
-                        <div class="pagination" id="pagination">
-                            <button class="page-nav" onclick="goToPage(currentPage - 1)" id="prevBtn">
-                                <i class="fas fa-chevron-left"></i> Previous
-                            </button>
-                            <button class="page-btn active" onclick="goToPage(0)">1</button>
-                            <button class="page-btn" onclick="goToPage(1)">2</button>
-                            <button class="page-btn" onclick="goToPage(2)">3</button>
-                            <button class="page-nav" onclick="goToPage(currentPage + 1)" id="nextBtn">
-                                Next <i class="fas fa-chevron-right"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                </section>
             </div>
         </main>
     </div>
