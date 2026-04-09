@@ -34,9 +34,14 @@ public class DataInitializer {
     @Bean
     public CommandLineRunner initData() {
         return args -> {
-            initManager();
-            initLibrarian();
-            initClient();
+            try {
+                initManager();
+                initLibrarian();
+                initClient();
+            } catch (Exception e) {
+                log.warn("Data initialization failed (database may not be ready yet): {}", e.getMessage());
+                // Don't rethrow - allow application to start even if init fails
+            }
         };
     }
 
