@@ -31,11 +31,15 @@ public class CustomUserDetailsService implements UserDetailsService {
     
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        log.debug("Loading user by email: {}", email);
+        log.info("Loading user by email: {}", email);
         
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+                .orElseThrow(() -> {
+                    log.error("User not found with email: {}", email);
+                    return new UsernameNotFoundException("User not found with email: " + email);
+                });
         
+        log.info("User found: {} with role: {}", user.getEmail(), user.getRole());
         String role = user.getRole().name();
         
         return new org.springframework.security.core.userdetails.User(
@@ -50,8 +54,15 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
     
     public User findUserByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+        log.info("Finding user by email: {}", email);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> {
+                    log.error("User not found with email: {}", email);
+                    return new UsernameNotFoundException("User not found with email: " + email);
+                });
+        log.info("Found user: {} (ID: {}, Role: {}, Type: {})", 
+            user.getEmail(), user.getUserID(), user.getRole(), user.getClass().getSimpleName());
+        return user;
     }
     
     public Optional<Client> findClientByEmail(String email) {

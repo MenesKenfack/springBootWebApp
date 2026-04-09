@@ -20,10 +20,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadProfile() {
     try {
+        console.log('Loading profile...');
         const response = await authAPI.getCurrentUser();
+        console.log('Profile response:', response);
 
         if (response.success && response.user) {
             const user = response.user;
+            console.log('User data:', user);
 
             // Fill form fields with null checks
             const firstNameEl = document.getElementById('profileFirstName');
@@ -60,9 +63,13 @@ async function loadProfile() {
                 if (upgradeBtn) upgradeBtn.style.display = 'none';
                 if (upgradeText) upgradeText.textContent = 'You have full access to all resources.';
             }
+            
+            // Store user data for navigation
+            UserStorage.setUser(user);
+            setupNavigation();
         } else {
             console.error('Profile response missing user data:', response);
-            Toast.error('Failed to load profile data');
+            Toast.error('Failed to load profile: ' + (response.message || 'Unknown error'));
         }
     } catch (error) {
         console.error('Error loading profile:', error);

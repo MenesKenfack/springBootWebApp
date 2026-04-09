@@ -189,23 +189,39 @@ public class AuthService {
     }
     
     public AuthResponse getCurrentUser(String email) {
-        User user = userDetailsService.findUserByEmail(email);
-        
-        return AuthResponse.builder()
-                .success(true)
-                .message("User retrieved successfully")
-                .user(AuthResponse.UserInfo.builder()
-                        .id(user.getUserID())
-                        .username(user.getUsername())
-                        .firstName(user.getFirstName())
-                        .lastName(user.getLastName())
-                        .email(user.getEmail())
-                        .dateOfBirth(user.getDateOfBirth())
-                        .role(user.getRole())
-                        .tier(user.getUserTier())
-                        .verified(user.isVerified())
-                        .build())
-                .build();
+        log.info("Getting current user for email: {}", email);
+        try {
+            User user = userDetailsService.findUserByEmail(email);
+            
+            if (user == null) {
+                log.error("User not found for email: {}", email);
+                return AuthResponse.builder()
+                        .success(false)
+                        .message("User not found")
+                        .build();
+            }
+            
+            log.info("Found user: {} with role: {}", user.getEmail(), user.getRole());
+            
+            return AuthResponse.builder()
+                    .success(true)
+                    .message("User retrieved successfully")
+                    .user(AuthResponse.UserInfo.builder()
+                            .id(user.getUserID())
+                            .username(user.getUsername())
+                            .firstName(user.getFirstName())
+                            .lastName(user.getLastName())
+                            .email(user.getEmail())
+                            .dateOfBirth(user.getDateOfBirth())
+                            .role(user.getRole())
+                            .tier(user.getUserTier())
+                            .verified(user.isVerified())
+                            .build())
+                    .build();
+        } catch (Exception e) {
+            log.error("Error retrieving user with email {}: {}", email, e.getMessage(), e);
+            throw new ResourceNotFoundException("User not found with email: " + email);
+        }
     }
     
     public Long getCurrentUserId(String email) {

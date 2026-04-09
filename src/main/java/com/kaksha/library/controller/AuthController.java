@@ -63,10 +63,29 @@ public class AuthController {
     
     @GetMapping("/me")
     public ResponseEntity<AuthResponse> getCurrentUser(Authentication authentication) {
-        String email = authentication.getName();
-        log.info("Get current user request for: {}", email);
-        AuthResponse response = authService.getCurrentUser(email);
-        return ResponseEntity.ok(response);
+        try {
+            if (authentication == null || authentication.getName() == null) {
+                log.error("Authentication is null or name is null");
+                return ResponseEntity.status(401).body(
+                    AuthResponse.builder()
+                        .success(false)
+                        .message("Not authenticated")
+                        .build()
+                );
+            }
+            String email = authentication.getName();
+            log.info("Get current user request for: {}", email);
+            AuthResponse response = authService.getCurrentUser(email);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            log.error("Error getting current user: {}", e.getMessage(), e);
+            return ResponseEntity.status(500).body(
+                AuthResponse.builder()
+                    .success(false)
+                    .message("Failed to load profile: " + e.getMessage())
+                    .build()
+            );
+        }
     }
     
     @PostMapping("/resend-verification")
