@@ -58,5 +58,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/uploads/**")
                 .addResourceLocations("file:" + absoluteUploadPath + "/")
                 .setCachePeriod(3600); // Cache for 1 hour
+
+        // Handle legacy image paths (images stored without /uploads/ prefix)
+        Path imagesPath = absoluteUploadPath.resolve("images");
+        log.info("Configuring resource handler for /images/** -> {}", imagesPath);
+
+        registry.addResourceHandler("/images/**")
+                .addResourceLocations("file:" + imagesPath + "/")
+                .setCachePeriod(3600); // Cache for 1 hour
     }
 }
